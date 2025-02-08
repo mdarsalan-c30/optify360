@@ -1,0 +1,26 @@
+User-agent: *
+Disallow: /private/
+Disallow: /temp/
+Disallow: /backup/
+Disallow: /old-site/
+
+# Allow search engines to crawl essential resources
+Allow: /assets/css/
+Allow: /assets/js/
+Allow: /assets/fonts/
+Allow: /assets/images/
+
+# Ensure images are indexed properly
+Allow: /assets/images/portfolio/
+Allow: /assets/images/logo/
+Allow: /assets/images/get-touch/
+Allow: /assets/images/about/
+Allow: /assets/images/blog/
+
+# Block unnecessary file types (if they exist)
+Disallow: /*.log$
+Disallow: /*.json$
+Disallow: /*.config$
+
+# Sitemap for faster indexing
+Sitemap: https://www.optify360.com/sitemap.xml
