@@ -45,6 +45,17 @@
         // Prevent right-click
         document.addEventListener('contextmenu', event => event.preventDefault());
         
+        // Disable keyboard shortcuts for developer tools
+        document.addEventListener("keydown", function(event) {
+            if (
+                event.key === "PrintScreen" ||
+                (event.ctrlKey && (event.key === "s" || event.key === "u" || event.key === "i" || event.key === "j" || event.key === "c"))
+            ) {
+                event.preventDefault();
+                alert("Screenshots and developer tools are disabled.");
+            }
+        });
+        
         // Detect tab switching and minimize
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
@@ -54,24 +65,20 @@
             }
         });
         
-        // Detect screenshot attempts
-        document.addEventListener("keydown", function(event) {
-            if (event.key === "PrintScreen" || (event.ctrlKey && event.key === "s")) {
-                event.preventDefault();
-                alert("Screenshots are disabled on this website.");
+        // Detect screen recording
+        async function detectScreenRecording() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const screenCapture = devices.some(device => device.kind === "videoinput" && device.label.toLowerCase().includes("screen"));
+                if (screenCapture) {
+                    document.getElementById('blackout').style.display = 'block';
+                    alert("Screen recording detected! Video playback is blocked.");
+                }
+            } catch (error) {
+                console.error("Error detecting screen recording: ", error);
             }
-        });
-        
-        // Attempt to detect screen recording
-        let recordingDetected = false;
-        const detectRecording = () => {
-            if (!recordingDetected && window.outerWidth - window.innerWidth > 100) {
-                recordingDetected = true;
-                document.getElementById('blackout').style.display = 'block';
-                alert("Screen recording detected! Video playback is blocked.");
-            }
-        };
-        window.addEventListener('resize', detectRecording);
+        }
+        setInterval(detectScreenRecording, 3000);
     </script>
 </body>
 </html>
