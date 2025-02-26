@@ -12,6 +12,7 @@
             align-items: center;
             height: 100vh;
             background-color: black;
+            overflow: hidden;
         }
         .video-container {
             position: relative;
@@ -21,6 +22,7 @@
             height: 45vw;
             max-width: 560px;
             max-height: 315px;
+            pointer-events: none; /* Prevents interaction */
         }
         .blackout {
             position: fixed;
@@ -53,13 +55,23 @@
             }
         });
         
-        // Detect screenshot (basic method)
+        // Detect screenshot attempts
         document.addEventListener("keydown", function(event) {
             if (event.key === "PrintScreen" || (event.ctrlKey && event.key === "s")) {
                 event.preventDefault();
                 alert("Screenshots are disabled on this website.");
             }
         });
+        
+        // Detect screen recording (basic approach)
+        setInterval(() => {
+            if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+                navigator.mediaDevices.getDisplayMedia().then(stream => {
+                    stream.getTracks().forEach(track => track.stop());
+                    alert("Screen recording is not allowed on this website.");
+                }).catch(() => {});
+            }
+        }, 3000);
     </script>
 </body>
 </html>
