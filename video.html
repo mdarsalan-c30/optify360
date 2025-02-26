@@ -63,15 +63,18 @@
             }
         });
         
-        // Detect screen recording (basic approach)
-        setInterval(() => {
-            if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
-                navigator.mediaDevices.getDisplayMedia().then(stream => {
-                    stream.getTracks().forEach(track => track.stop());
-                    alert("Screen recording is not allowed on this website.");
-                }).catch(() => {});
+        // Block screen recording via media query trick
+        const detectRecording = () => {
+            let video = document.createElement('video');
+            video.style.display = 'none';
+            document.body.appendChild(video);
+            let stream = video.captureStream ? video.captureStream() : null;
+            if (stream) {
+                alert("Screen recording detected! Recording is blocked.");
+                document.getElementById('blackout').style.display = 'block';
             }
-        }, 3000);
+        };
+        setInterval(detectRecording, 5000);
     </script>
 </body>
 </html>
