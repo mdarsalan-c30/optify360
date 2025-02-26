@@ -22,7 +22,6 @@
             height: 45vw;
             max-width: 560px;
             max-height: 315px;
-            pointer-events: none; /* Prevents interaction */
         }
         .blackout {
             position: fixed;
@@ -63,18 +62,16 @@
             }
         });
         
-        // Block screen recording via media query trick
+        // Attempt to detect screen recording
+        let recordingDetected = false;
         const detectRecording = () => {
-            let video = document.createElement('video');
-            video.style.display = 'none';
-            document.body.appendChild(video);
-            let stream = video.captureStream ? video.captureStream() : null;
-            if (stream) {
-                alert("Screen recording detected! Recording is blocked.");
+            if (!recordingDetected && window.outerWidth - window.innerWidth > 100) {
+                recordingDetected = true;
                 document.getElementById('blackout').style.display = 'block';
+                alert("Screen recording detected! Video playback is blocked.");
             }
         };
-        setInterval(detectRecording, 5000);
+        window.addEventListener('resize', detectRecording);
     </script>
 </body>
 </html>
