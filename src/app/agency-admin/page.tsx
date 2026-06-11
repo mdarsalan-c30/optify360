@@ -228,7 +228,7 @@ export default function AgencyAdminPage() {
             fetchAllData();
           } else {
             // User successfully fetched but is NOT an admin
-            await signOut(auth);
+            // Do NOT call signOut(auth) here, otherwise it logs them out globally!
             setLoginError("Access denied. This portal is for agency admins only.");
             setIsLoggedIn(false);
           }

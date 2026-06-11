@@ -168,7 +168,7 @@ export default function ClientPortalPage() {
             }
           } else {
             // User successfully fetched but is NOT a client
-            await signOut(auth);
+            // Do NOT call signOut(auth) here!
             setLoginError("Access denied. This portal is for clients only.");
             setIsLoggedIn(false);
             setUserRecord(null);
