@@ -204,13 +204,25 @@ export default function AgencyAdminPage() {
 
   // ── Auth ────────────────────────────────────────────────────────────────────
 
+  // Whitelisted admin emails — auto-bootstrapped as admin on first login
+  const ADMIN_EMAILS = [
+    "admin@optify360.com",
+    "arsalan@optify360.in",
+    "optify360official@gmail.com",
+  ];
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const record = await getUserRecord(user.uid);
+        let record = await getUserRecord(user.uid);
+
+        // Auto-create admin record for whitelisted emails on first login
+        if (!record && ADMIN_EMAILS.includes(user.email || "")) {
+          await upsertUserRecord(user.uid, user.email!, "admin", user.email!.split("@")[0]);
+          record = await getUserRecord(user.uid);
+        }
+
         if (record?.role === "admin") {
-          // Bootstrap: if no record existed, create one
-          if (!record) await upsertUserRecord(user.uid, user.email!, "admin", "Admin");
           setIsLoggedIn(true);
           fetchAllData();
         } else {
