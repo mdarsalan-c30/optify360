@@ -1,80 +1,103 @@
 import type { Metadata } from "next";
-import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Outfit, Geist } from "next/font/google";
 import "./globals.css";
+import SmoothScroll from "@/components/SmoothScroll";
 
-const headingFont = Outfit({
-  variable: "--font-heading",
+const outfit = Outfit({
   subsets: ["latin"],
+  variable: "--font-outfit",
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
-const bodyFont = Plus_Jakarta_Sans({
-  variable: "--font-sans",
+const geistSans = Geist({
   subsets: ["latin"],
-});
-
-const monoFont = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
+  variable: "--font-geist-sans",
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "optify360 | High-Performance Web Engineering & SEO",
-    template: "%s | optify360",
-  },
-  description: "optify360 is an elite digital systems and SEO agency led by Md Arsalan, delivering lightning-fast web applications, optimized conversions, and search engine dominance.",
+  title: "Optify360 | Custom SaaS Development, Technical SEO & AI Automation",
+  description: "Optify360 builds high-performance custom SaaS platforms, automates business workflows with AI agents, and executes technical SEO strategies that drive enterprise growth. Led by Md Arsalan.",
   metadataBase: new URL("https://optify360.vercel.app"),
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
-    title: "optify360 | High-Performance Web Engineering & SEO",
-    description: "Elite digital systems and SEO agency led by Md Arsalan, delivering lightning-fast web applications and search engine dominance.",
+    title: "Optify360 | Elite Software Engineering & Digital Growth Systems",
+    description: "High-end custom software development, technical SEO, and intelligent workflow automation designed to maximize business revenue.",
     url: "https://optify360.vercel.app",
-    siteName: "optify360",
-    locale: "en_US",
-    type: "website",
+    siteName: "Optify360",
     images: [
       {
-        url: "https://optify360.vercel.app/og-image.jpg",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "optify360 Agency",
+        alt: "Optify360 - Custom SaaS Development, Technical SEO & AI Automation",
       },
     ],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "optify360 | High-Performance Web Engineering & SEO",
-    description: "Elite digital systems and SEO agency led by Md Arsalan, delivering lightning-fast web applications and search engine dominance.",
-    images: ["https://optify360.vercel.app/og-image.jpg"],
-    creator: "@mdarsalan",
+    title: "Optify360 | Elite Software Engineering & Digital Growth Systems",
+    description: "High-end custom software development, technical SEO, and intelligent workflow automation designed to maximize business revenue.",
+    images: ["/og-image.jpg"],
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
+  icons: {
+    icon: "/favicon.png",
   },
 };
-
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Optify360",
+    "url": "https://optify360.vercel.app",
+    "logo": "https://lh3.googleusercontent.com/a/ACg8ocLIBL0-kfIXrdOvJzF8t4I_wTT_YiHH0AvthkMfKd8ZWVv7hc0=s360-c-no",
+    "description": "Optify360 builds high-performance custom SaaS platforms, automates business workflows with AI agents, and executes technical SEO strategies that drive enterprise growth. Led by Md Arsalan.",
+    "founder": {
+      "@type": "Person",
+      "name": "Md Arsalan",
+      "url": "https://mdarsalan.vercel.app",
+      "image": "https://media.licdn.com/dms/image/v2/D4D03AQHIE7r-qR8DEA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1685817504775?e=2147483647&v=beta&t=Saj7Y97G4vqro-E134AFloMbU_MCG1Kc6qFM8z6Nx04",
+      "sameAs": "https://www.instagram.com/optify360.official/",
+      "jobTitle": "COO",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "studycubs"
+      }
+    },
+    "sameAs": [
+      "https://www.instagram.com/optify360.official/"
+    ]
+  };
+
   return (
     <html
       lang="en"
-      className={`${headingFont.variable} ${bodyFont.variable} ${monoFont.variable} antialiased`}
+      className={`${outfit.variable} ${geistSans.variable} h-full antialiased`}
     >
-      <body className="flex flex-col bg-[#030303] text-[#F5F5F5]">{children}</body>
+      <body className="bg-bg text-text-main min-h-screen flex flex-col selection:bg-primary-orange/30 selection:text-text-main">
+        <SmoothScroll>
+          <div className="flex flex-col min-h-screen">
+            {children}
+          </div>
+        </SmoothScroll>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        {/* Google Analytics */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-LH4M28WJBY"></script>
+        <script>
+          {`window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-LH4M28WJBY');`}
+        </script>
+      </body>
     </html>
   );
 }

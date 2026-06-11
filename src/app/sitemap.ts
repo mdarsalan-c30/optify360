@@ -1,34 +1,38 @@
-import { MetadataRoute } from "next";
-import { getBlogPosts } from "@/utils/blog";
-import { caseStudies } from "@/content/caseStudies";
+import type { MetadataRoute } from "next";
+import { getAllPosts } from "@/lib/blogs";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://optify360.com";
+  const baseUrl = "https://optify360.vercel.app";
 
   // Static routes
-  const staticRoutes = ["", "/blog", "/case-studies"].map((route) => ({
+  const routes = [
+    "",
+    "/about",
+    "/services",
+    "/portfolio",
+    "/blog",
+    "/contact",
+    "/privacy",
+    "/terms",
+  ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
-    changeFrequency: "daily" as const,
-    priority: 1.0,
+    changeFrequency: "weekly" as const,
+    priority: route === "" ? 1.0 : 0.8,
   }));
 
-  // Dynamic Case Studies
-  const caseStudyRoutes = caseStudies.map((study) => ({
-    url: `${baseUrl}/case-studies/${study.slug}`,
-    lastModified: new Date(study.datePublished).toISOString(),
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }));
-
-  // Dynamic Blog Posts
-  const blogPosts = await getBlogPosts();
-  const blogRoutes = blogPosts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(post.date).toISOString(),
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
-
-  return [...staticRoutes, ...caseStudyRoutes, ...blogRoutes];
+  // Dynamic blog routes
+  try {
+    const posts = await getAllPosts();
+    const blogRoutes = posts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.date).toISOString() || new Date().toISOString(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    }));
+    return [...routes, ...blogRoutes];
+  } catch (error) {
+    console.error("Failed to generate sitemap for blog routes:", error);
+    return routes;
+  }
 }

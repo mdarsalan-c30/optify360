@@ -1,15 +1,17 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getBlogPostBySlug, getBlogPosts } from "@/utils/blog";
-import { BlogPostingSchema } from "@/components/json-ld";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { getCombinedPostBySlug, getAllCombinedPosts } from "@/lib/blogs";
+import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const posts = await getBlogPosts();
+  const posts = await getAllCombinedPosts();
   return posts.map((post) => ({
     slug: post.slug,
   }));
@@ -17,124 +19,102 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+  const post = await getCombinedPostBySlug(slug);
+  
   if (!post) {
     return {
-      title: "Blog Post Not Found",
+      title: "Post Not Found | Optify360 Insiders",
     };
   }
 
   return {
-    title: `${post.title} | optify360 Blog`,
-    description: post.description,
+    title: `${post.title} | Optify360 Insiders`,
+    description: post.excerpt,
     openGraph: {
-      title: `${post.title} | optify360 Blog`,
-      description: post.description,
-      url: `https://optify360.vercel.app/blog/${post.slug}`,
+      title: `${post.title} | Optify360 Insiders`,
+      description: post.excerpt,
       type: "article",
-      images: [
-        {
-          url: post.image || `https://optify360.vercel.app/og-${post.slug}.jpg`,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${post.title} | optify360 Blog`,
-      description: post.description,
-      images: [post.image || `https://optify360.vercel.app/og-${post.slug}.jpg`],
+      publishedTime: post.date,
+      authors: [post.author],
     },
   };
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+  const post = await getCombinedPostBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-black font-sans text-zinc-900 dark:text-zinc-50">
-      {/* Schema Injection */}
-      <BlogPostingSchema
-        title={post.title}
-        description={post.description}
-        datePublished={post.date}
-        image={post.image || `https://optify360.vercel.app/og-${post.slug}.jpg`}
-        url={`https://optify360.vercel.app/blog/${post.slug}`}
-        authorName={post.author}
-      />
-
-      <main className="flex-grow max-w-5xl mx-auto px-6 py-20 w-full">
-        {/* Header */}
-        <header className="mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-8">
-          <Link href="/blog" className="text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors">
-            &larr; Back to Blog
+    <>
+      <Navbar />
+      <main className="flex-grow pt-32 pb-24">
+        <article className="max-w-4xl mx-auto px-6">
+          {/* Back button */}
+          <Link 
+            href="/blog" 
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-primary-orange transition-colors group mb-8 font-mono"
+          >
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" /> Back to blog list
           </Link>
-          <div className="flex items-center gap-3 mt-6 mb-2">
-            <span className="text-xs uppercase tracking-wider text-zinc-500 font-semibold px-2 py-0.5 bg-zinc-150 dark:bg-zinc-800 rounded">
+
+          {/* Heading */}
+          <div className="space-y-6 mb-12 border-b border-white/[0.05] pb-10">
+            <span className="bg-primary-orange/15 border border-primary-orange/20 text-primary-orange rounded-full px-3 py-1 text-xs font-bold font-heading uppercase tracking-wider inline-block">
               {post.category}
             </span>
-            <span className="text-xs text-zinc-400">
-              Published: {post.date}
+            
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold font-heading tracking-tight text-text-main leading-tight">
+              {post.title}
+            </h1>
+
+            {/* Meta details */}
+            <div className="flex flex-wrap items-center gap-6 text-xs text-text-muted font-mono pt-2">
+              <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-primary-orange" /> {post.date}</span>
+              <span className="flex items-center gap-1.5"><User className="w-3.5 h-3.5 text-primary-orange" /> Written by {post.author}</span>
+              <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-primary-orange" /> 5 min read</span>
+            </div>
+          </div>
+
+          {/* Article Cover Placeholder Gradient */}
+          <div className="w-full h-[320px] md:h-[450px] relative bg-gradient-to-br from-orange-600/10 via-purple-900/5 to-black/90 rounded-3xl overflow-hidden border border-white/[0.05] mb-12 flex items-center justify-center p-8 select-none">
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+            <span className="font-heading font-extrabold text-5xl md:text-6xl text-text-main/5 uppercase tracking-widest text-center select-none">
+              {post.category}
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4 leading-tight">
-            {post.title}
-          </h1>
-          <div className="text-sm text-zinc-500">
-            By <span className="font-semibold text-zinc-700 dark:text-zinc-300">{post.author}</span>
+
+          {/* Markdown Content Output */}
+          <div 
+            className="prose prose-invert max-w-none prose-p:my-4 prose-p:leading-relaxed prose-headings:font-heading"
+            dangerouslySetInnerHTML={{ __html: post.contentHtml }}
+          />
+
+          {/* Bottom Call to Action */}
+          <div className="mt-20 p-8 border border-white/[0.08] bg-surface rounded-2xl flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary-orange/5 rounded-full blur-2xl pointer-events-none" />
+            <div className="space-y-2 relative z-10 max-w-xl">
+              <h3 className="text-xl font-bold font-heading text-text-main">
+                Need high-performance engineering for your platform?
+              </h3>
+              <p className="text-xs text-text-muted leading-relaxed">
+                Connect with Md Arsalan and the Optify360 team to scope your application development, technical search positioning, or workflow automation.
+              </p>
+            </div>
+            <Link 
+              href="/contact"
+              className="bg-primary-orange hover:bg-primary-orange/90 text-text-main font-semibold px-6 py-3 rounded-xl text-sm transition-all duration-200 shrink-0 relative z-10 whitespace-nowrap"
+            >
+              Get in Touch
+            </Link>
           </div>
-        </header>
 
-        {/* Content & Table of Contents layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Main Article Content */}
-          <article className="lg:col-span-8 blog-content" dangerouslySetInnerHTML={{ __html: post.html }} />
-
-          {/* Table of Contents Sidebar */}
-          <aside className="hidden lg:block lg:col-span-4 lg:sticky lg:top-24 max-h-[calc(100vh-120px)] overflow-y-auto border-l border-zinc-200 dark:border-zinc-850 pl-6 py-2">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-4">
-              Table of Contents
-            </h2>
-            {post.toc.length === 0 ? (
-              <p className="text-xs text-zinc-400">No headings in this post.</p>
-            ) : (
-              <nav className="space-y-3">
-                {post.toc.map((item, index) => {
-                  // Indent based on heading level (h2, h3, h4)
-                  const indentClass =
-                    item.level === 3 ? "pl-4 text-xs" : item.level === 4 ? "pl-8 text-[11px]" : "text-xs font-medium";
-                  return (
-                    <a
-                      key={index}
-                      href={`#${item.id}`}
-                      className={`block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors ${indentClass}`}
-                    >
-                      {item.text}
-                    </a>
-                  );
-                })}
-              </nav>
-            )}
-          </aside>
-        </div>
-
-        <div className="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
-          <Link href="/blog" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 text-sm">
-            &larr; Back to Blog
-          </Link>
-        </div>
+        </article>
       </main>
-
-      <footer className="py-10 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black text-center text-xs text-zinc-500">
-        <p>&copy; {new Date().getFullYear()} Md Arsalan &amp; optify360. All rights reserved.</p>
-      </footer>
-    </div>
+      <Footer />
+    </>
   );
 }

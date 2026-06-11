@@ -1,83 +1,100 @@
-import SmoothScroll from "@/components/SmoothScroll";
-import Header from "@/components/Header";
-import Hero from "@/components/sections/Hero";
-import TrustBar from "@/components/sections/TrustBar";
-import BentoServices from "@/components/sections/BentoServices";
-import HorizontalScrollPortfolio from "@/components/sections/HorizontalScrollPortfolio";
-import Process from "@/components/sections/Process";
-import Testimonials from "@/components/sections/Testimonials";
-import BudgetCalculator from "@/components/sections/BudgetCalculator";
-import ContactForm from "@/components/sections/ContactForm";
-import FAQ from "@/components/sections/FAQ";
+import Navbar from "@/components/Navbar";
+import Hero from "@/sections/Hero";
+import Services from "@/sections/Services";
+import Portfolio from "@/sections/Portfolio";
+import Process from "@/sections/Process";
+import Testimonials from "@/sections/Testimonials";
 import Footer from "@/components/Footer";
-import { FAQSchema, OrganizationSchema } from "@/components/json-ld";
 
 export default function Home() {
-  const faqs = [
-    {
-      question: "What core tech stack does optify360 engineer on?",
-      answer: "We engineer high-performance platforms using Next.js 16, React 19, Tailwind CSS v4, and Framer Motion. For backend services, we integrate Go, Rust, Python API routers, Redis caching networks, and headless CMS frameworks to maintain speed and telemetry control."
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "Optify360",
+    "image": "https://optify360.vercel.app/images/office-cover.jpg",
+    "@id": "https://optify360.vercel.app/#localbusiness",
+    "url": "https://optify360.vercel.app",
+    "telephone": "+1-800-555-0199",
+    "priceRange": "$$$$",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Suite 100, Tech District",
+      "addressLocality": "New Delhi",
+      "addressRegion": "DL",
+      "postalCode": "110001",
+      "addressCountry": "IN"
     },
-    {
-      question: "How do you build complex animations without slowing page speed?",
-      answer: "We avoid heavy WebGL and bulky 3D model files (such as .gltf or .obj) that disrupt performance. Instead, we use math-based CSS variables, radial gradient layers, SVG filters, and lightweight spring dynamics in Framer Motion to build premium responsive interactions that run at a smooth 60fps."
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 28.6139,
+      "longitude": 77.2090
     },
-    {
-      question: "What does the typical discovery-to-launch roadmap look like?",
-      answer: "Our roadmap spans 6 to 10 weeks. It begins with (01) Discovery & Auditing, shifts to (02) High-Fidelity Bento Design layouts, moves into (03) Custom Code Assembly, and completes with (04) Edge CDN Launch. Every phase has strict telemetry audits."
-    },
-    {
-      question: "Do you integrate custom database migrations and SEO schema?",
-      answer: "Absolutely. We build structured JSON-LD schemas directly into the HTML document node, configure strict canonical mappings, and design robust database pipeline syncs to guarantee zero data loss or search indexing drops during platform launch."
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "opens": "09:00",
+      "closes": "18:00"
     }
-  ];
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What services does Optify360 provide?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Optify360 provides custom SaaS and web development, advanced data-driven SEO, AI workflow automation engineering, brand identity design systems, and conversion-focused growth marketing."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does Optify360 approach SaaS development?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We build custom, cloud-native applications from scratch using Next.js, TypeScript, and high-performance serverless or VPS architectures. We avoid templates to ensure custom designs and maximum load speeds."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is Optify360's SEO service different?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Unlike standard agencies, we use technical optimization (Core Web Vitals, programmatic architectures, schema tags) and intent-driven semantic structures. This ensures organic traffic directly translates to demo sign-ups and sales."
+        }
+      }
+    ]
+  };
 
   return (
-    <SmoothScroll>
-      <div className="relative min-h-screen bg-brand-black text-brand-text font-sans antialiased overflow-x-hidden selection:bg-brand-orange selection:text-brand-black">
-        {/* Schema Markup for SEO */}
-        <OrganizationSchema />
-        <FAQSchema questions={faqs} />
+    <>
+      <Navbar />
+      <main className="flex-grow">
+        <Hero />
+        <Services />
+        <Portfolio />
+        <Process />
+        <Testimonials />
+      </main>
+      <Footer />
 
-        {/* Global atmospheric background grid */}
-        <div className="absolute inset-0 glowing-grid pointer-events-none opacity-20" />
-
-        {/* Navigation Header */}
-        <Header />
-
-        {/* Main Content Sections */}
-        <main className="w-full flex flex-col">
-          {/* Hero Section */}
-          <Hero />
-
-          {/* TrustBar (Logo marquee) */}
-          <TrustBar />
-
-          {/* Bento Services Section */}
-          <BentoServices />
-
-          {/* Horizontal Scroll Portfolio Section */}
-          <HorizontalScrollPortfolio />
-
-          {/* Vertical Sticky Process Steps */}
-          <Process />
-
-          {/* Testimonials Parallax Columns */}
-          <Testimonials />
-
-          {/* Budget Calculator (Pricing and lead qualification) */}
-          <BudgetCalculator />
-
-          {/* ContactForm (Lead capturing with direct channels) */}
-          <ContactForm />
-
-          {/* Interactive FAQ Accordions */}
-          <FAQ />
-        </main>
-
-        {/* Footer */}
-        <Footer />
-      </div>
-    </SmoothScroll>
+      {/* SEO Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+    </>
   );
 }

@@ -1,83 +1,83 @@
 @import "tailwindcss";
 
-@theme {
-  --color-brand-black: #030303;
-  --color-brand-surface: #0a0a0a;
-  --color-brand-orange: #FF6B00;
-  --color-brand-dark-orange: #FF8C42;
-  --color-brand-text: #F5F5F5;
-  --color-brand-muted: #8E8E93;
-
-  --font-sans: var(--font-sans), sans-serif;
-  --font-heading: var(--font-heading), sans-serif;
-  --font-mono: var(--font-mono), monospace;
-}
-
 :root {
-  --background: #030303;
+  --background: #050505;
   --foreground: #F5F5F5;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* Lenis smooth scroll styling directives */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
-html,
+@theme {
+  --color-bg: #050505;
+  --color-surface: #111111;
+  --color-primary-orange: #FF6B00;
+  --color-secondary-orange: #FF8C42;
+  --color-text-main: #F5F5F5;
+  --color-text-muted: #A0A0A0;
+  
+  --font-heading: var(--font-outfit), sans-serif;
+  --font-sans: var(--font-geist-sans), sans-serif;
+}
+
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  overflow-x: hidden;
-  width: 100%;
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
   font-family: var(--font-sans);
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #030303;
-}
-::-webkit-scrollbar-thumb {
-  background: #1c1c1e;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #FF6B00;
-}
-
-/* Helper Utilities */
-.glowing-grid {
-  background-size: 60px 60px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 107, 0, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 107, 0, 0.02) 1px, transparent 1px);
+/* Custom Utilities for Premium Glows and Glassmorphism */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .text-gradient {
-  background: linear-gradient(to bottom, #FFFFFF 40%, #8E8E93 100%);
+  background: linear-gradient(135deg, #FF6B00 0%, #FF8C42 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-.orange-gradient {
-  background: linear-gradient(135deg, #FF6B00 0%, #FF8C42 100%);
+  background-clip: text;
 }
 
 .orange-glow {
-  box-shadow: 0 0 60px 10px rgba(255, 107, 0, 0.15);
+  position: absolute;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 107, 0, 0.15) 0%, rgba(255, 140, 66, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+  filter: blur(80px);
 }
 
-.orange-glow-sm {
-  box-shadow: 0 0 20px 4px rgba(255, 107, 0, 0.12);
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.spotlight-card:hover {
+  border-color: rgba(255, 107, 0, 0.3);
+  box-shadow: 0 0 40px rgba(255, 107, 0, 0.12);
+  transform: translateY(-6px);
+}
+
+/* Hide scrollbar utility */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -85,129 +85,3 @@ h1, h2, h3, h4, h5, h6 {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
-/* Custom radial background for atmospheric lighting */
-.radial-dark {
-  background: radial-gradient(circle at 50% 50%, rgba(255, 107, 0, 0.03) 0%, transparent 80%);
-}
-
-/* Keyframe animations for Accretion Orb and space flow */
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes spin-reverse-slow {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 20s linear infinite;
-}
-
-.animate-spin-reverse-slow {
-  animation: spin-reverse-slow 25s linear infinite;
-}
-
-
-/* Blog Content Markdown Typography Styling */
-.blog-content {
-  line-height: 1.8;
-  font-size: 1.05rem;
-}
-.blog-content p {
-  margin-bottom: 1.5rem;
-  color: #D4D4D8; /* zinc-300 */
-}
-.blog-content h2 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  color: #FFFFFF;
-  letter-spacing: -0.025em;
-}
-.blog-content h3 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
-  color: #FFFFFF;
-  letter-spacing: -0.02em;
-}
-.blog-content h4 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #FFFFFF;
-}
-.blog-content ul {
-  list-style-type: disc;
-  margin-left: 1.5rem;
-  margin-bottom: 1.5rem;
-  color: #D4D4D8;
-}
-.blog-content ol {
-  list-style-type: decimal;
-  margin-left: 1.5rem;
-  margin-bottom: 1.5rem;
-  color: #D4D4D8;
-}
-.blog-content li {
-  margin-bottom: 0.5rem;
-}
-.blog-content code {
-  font-family: var(--font-mono);
-  background-color: #27272A; /* zinc-800 */
-  padding: 0.2rem 0.4rem;
-  border-radius: 0.25rem;
-  font-size: 0.9em;
-  color: #FF8C42;
-}
-.blog-content pre {
-  background-color: #18181B; /* zinc-900 */
-  border: 1px solid #27272A; /* zinc-800 */
-  padding: 1.25rem;
-  border-radius: 0.75rem;
-  overflow-x: auto;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-.blog-content pre code {
-  background-color: transparent;
-  padding: 0;
-  border-radius: 0;
-  color: #F5F5F5;
-  font-size: 0.9em;
-}
-.blog-content a {
-  color: #FF6B00;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-.blog-content a:hover {
-  color: #FF8C42;
-}
-.blog-content blockquote {
-  border-left: 4px solid #FF6B00;
-  padding-left: 1.5rem;
-  font-style: italic;
-  margin: 1.5rem 0;
-  color: #A1A1AA; /* zinc-400 */
-}
-.blog-content hr {
-  border: 0;
-  border-top: 1px solid #27272A;
-  margin: 2rem 0;
-}
-
