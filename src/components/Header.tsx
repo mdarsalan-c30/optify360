@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, ShieldAlert } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export default function Header() {
   return (
@@ -9,30 +9,34 @@ export default function Header() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="fixed top-0 left-0 w-full z-50 bg-brand-black/70 backdrop-blur-md border-b border-brand-text/5 px-6 py-4 md:px-12 lg:px-24 flex items-center justify-between"
+      className="fixed top-6 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl z-50 bg-brand-black/60 backdrop-blur-xl border border-white/[0.05] rounded-full px-6 py-3 flex items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
     >
       {/* Brand logo */}
-      <a href="#" className="flex items-center gap-2 font-black font-sans text-xl tracking-tighter text-brand-text group">
-        <div className="w-5 h-5 rounded-full bg-brand-orange orange-glow-sm group-hover:scale-110 transition-transform flex items-center justify-center">
-          <div className="w-2.5 h-2.5 rounded-full bg-brand-black" />
+      <a href="#" className="flex items-center gap-2 font-black font-sans text-lg tracking-tighter text-brand-text group">
+        <div className="w-4 h-4 rounded-full bg-brand-orange orange-glow-sm group-hover:scale-110 transition-transform flex items-center justify-center">
+          <div className="w-2 h-2 rounded-full bg-brand-black" />
         </div>
         BLACK<span className="text-brand-orange group-hover:text-brand-dark-orange transition-colors">HOLE</span>
       </a>
 
-      {/* Nav links (hidden on mobile, basic responsive layout) */}
-      <nav className="hidden md:flex items-center gap-8 text-xs font-mono tracking-widest text-brand-muted uppercase">
-        <a href="#" className="hover:text-brand-orange transition-colors">Systems</a>
-        <a href="#" className="hover:text-brand-orange transition-colors">Showcase</a>
-        <a href="#" className="hover:text-brand-orange transition-colors">Process</a>
-        <a href="#" className="hover:text-brand-orange transition-colors">FAQ</a>
+      {/* Nav links (hidden on mobile) */}
+      <nav className="hidden md:flex items-center gap-8 text-[11px] font-mono tracking-widest text-brand-muted uppercase">
+        <a href="#capabilities" className="hover:text-brand-orange transition-colors">Capabilities</a>
+        <a href="#showcase" className="hover:text-brand-orange transition-colors">Showcase</a>
+        <a href="#process" className="hover:text-brand-orange transition-colors">Process</a>
+        <a href="#calculator" className="hover:text-brand-orange transition-colors">Calculator</a>
+        <a href="#contact" className="hover:text-brand-orange transition-colors">Contact</a>
       </nav>
 
       {/* Launch Portal button */}
-      <button className="relative group px-5 py-2 rounded border border-brand-orange/30 text-xs font-mono tracking-widest text-brand-orange uppercase bg-brand-orange/5 hover:bg-brand-orange hover:text-brand-black transition-all duration-300 cursor-pointer">
-        <span className="relative z-10 flex items-center gap-1.5">
-          Portal <ArrowUpRight className="w-3.5 h-3.5" />
+      <a 
+        href="#calculator"
+        className="relative group px-4 py-1.5 rounded-full border border-brand-orange/30 text-[10px] font-mono tracking-widest text-brand-orange uppercase bg-brand-orange/5 hover:bg-brand-orange hover:text-brand-black transition-all duration-300 cursor-pointer"
+      >
+        <span className="relative z-10 flex items-center gap-1">
+          Estimate <ArrowUpRight className="w-3 h-3" />
         </span>
-      </button>
+      </a>
     </motion.header>
   );
 }

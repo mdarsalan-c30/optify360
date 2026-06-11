@@ -1,19 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-black: #0A0A0A;
-  --color-brand-surface: #111111;
+  --color-brand-black: #030303;
+  --color-brand-surface: #0a0a0a;
   --color-brand-orange: #FF6B00;
   --color-brand-dark-orange: #FF8C42;
   --color-brand-text: #F5F5F5;
-  --color-brand-muted: #A0A0A0;
+  --color-brand-muted: #8E8E93;
 
-  --font-sans: var(--font-geist-sans), sans-serif;
-  --font-mono: var(--font-geist-mono), monospace;
+  --font-sans: var(--font-sans), sans-serif;
+  --font-heading: var(--font-heading), sans-serif;
+  --font-mono: var(--font-mono), monospace;
 }
 
 :root {
-  --background: #0A0A0A;
+  --background: #030303;
   --foreground: #F5F5F5;
 }
 
@@ -29,18 +30,23 @@ body {
   color: var(--foreground);
   overflow-x: hidden;
   width: 100%;
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
 }
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: #030303;
 }
 ::-webkit-scrollbar-thumb {
-  background: #222;
-  border-radius: 4px;
+  background: #1c1c1e;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #FF6B00;
@@ -48,14 +54,14 @@ body {
 
 /* Helper Utilities */
 .glowing-grid {
-  background-size: 50px 50px;
+  background-size: 60px 60px;
   background-image: 
-    linear-gradient(to right, rgba(255, 107, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 107, 0, 0.03) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 107, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 107, 0, 0.02) 1px, transparent 1px);
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #F5F5F5 30%, #A0A0A0 100%);
+  background: linear-gradient(to bottom, #FFFFFF 40%, #8E8E93 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -65,11 +71,11 @@ body {
 }
 
 .orange-glow {
-  box-shadow: 0 0 50px 15px rgba(255, 107, 0, 0.2);
+  box-shadow: 0 0 60px 10px rgba(255, 107, 0, 0.15);
 }
 
 .orange-glow-sm {
-  box-shadow: 0 0 20px 5px rgba(255, 107, 0, 0.15);
+  box-shadow: 0 0 20px 4px rgba(255, 107, 0, 0.12);
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -82,8 +88,36 @@ body {
 
 /* Custom radial background for atmospheric lighting */
 .radial-dark {
-  background: radial-gradient(circle at 50% 50%, rgba(255, 107, 0, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(255, 107, 0, 0.03) 0%, transparent 80%);
 }
+
+/* Keyframe animations for Accretion Orb and space flow */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse-slow {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-spin-reverse-slow {
+  animation: spin-reverse-slow 25s linear infinite;
+}
+
 
 /* Blog Content Markdown Typography Styling */
 .blog-content {

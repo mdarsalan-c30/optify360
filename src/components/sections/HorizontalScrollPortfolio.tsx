@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight, Code2, Globe, Cpu, ArrowRight } from "lucide-react";
+import { ArrowRight, Code2, Globe, Cpu, CheckCircle2 } from "lucide-react";
 
 interface Project {
   num: string;
@@ -10,6 +10,7 @@ interface Project {
   category: string;
   description: string;
   tech: string[];
+  metrics: { label: string; val: string }[];
   color: string;
   bgGlow: string;
 }
@@ -17,56 +18,70 @@ interface Project {
 const projects: Project[] = [
   {
     num: "01",
-    title: "VORTEX BLOCKCHAIN ENGINE",
-    category: "Web3 Systems / Fintech",
-    description: "A real-time telemetry dashboard and high-frequency trading platform built on a custom Next.js layer with zero-latency visual rendering.",
-    tech: ["Next.js 16", "Framer Motion", "Rust Core", "WebSockets"],
+    title: "CLIMATEVERSE DATA ENGINE",
+    category: "Geospatial / Data Science",
+    description: "Re-engineered data rendering pipelines to support real-time geospatial visualizations at scale, achieving zero rendering lag on mobile devices.",
+    tech: ["Next.js", "WebGL Shaders", "R-Tree Indexing", "Binary Streaming"],
+    metrics: [
+      { label: "Rendering Speed", val: "60 FPS" },
+      { label: "Bandwidth Saved", val: "50%" },
+    ],
     color: "from-brand-orange to-brand-dark-orange",
-    bgGlow: "rgba(255, 107, 0, 0.08)"
+    bgGlow: "rgba(255, 107, 0, 0.06)"
   },
   {
     num: "02",
-    title: "AETHER AUTOMATION MATRIX",
-    category: "AI Operations / CRM",
-    description: "An agentic neural workflow mapping pipeline that synchronizes developer cycles and visualizes asset compilation across multiple cloud databases.",
-    tech: ["React 19", "Python API", "Tailwind v4", "Docker"],
+    title: "PDFVERSE AI DATABASE",
+    category: "AI Operations / Document Vector",
+    description: "Designed a vector matching document catalog that parses system schemas and searches database records with sub-second retrieval times.",
+    tech: ["React 19", "Python API", "Tailwind CSS v4", "Docker"],
+    metrics: [
+      { label: "Query Speed", val: "<0.9s" },
+      { label: "Lead Pipeline", val: "+82%" },
+    ],
     color: "from-brand-dark-orange to-[#FFB800]",
-    bgGlow: "rgba(255, 140, 66, 0.08)"
+    bgGlow: "rgba(255, 140, 66, 0.06)"
   },
   {
     num: "03",
-    title: "SPECTRE DIGITAL ECOSYSTEM",
-    category: "Luxury E-Commerce",
-    description: "Full headless architecture for a luxury fashion house, featuring localized checkout channels, bespoke 3D product visualizers, and swift speeds.",
-    tech: ["Next.js Headless", "GraphQL", "Three.js", "Tailwind CSS"],
+    title: "MYNRA DIGITAL PORTAL",
+    category: "E-Commerce / Headless Architecture",
+    description: "Full headless architecture for a luxury shopping platform, utilizing centralized query servers to minimize layout shift.",
+    tech: ["GraphQL", "Next.js Headless", "Three.js", "AWS CDN"],
+    metrics: [
+      { label: "Load Time", val: "1.1s" },
+      { label: "Engagement", val: "+40%" },
+    ],
     color: "from-[#FF4E00] to-brand-orange",
-    bgGlow: "rgba(255, 78, 0, 0.08)"
+    bgGlow: "rgba(255, 78, 0, 0.06)"
   },
   {
     num: "04",
-    title: "HYPERION TELEMETRY APP",
-    category: "Mobile Performance / IoT",
+    title: "STUDYCUBS MULTIPLAYER",
+    category: "EdTech / Real-time Lobbies",
     description: "Cross-platform core engine managing visual telematics and server response mappings for next-generation automated vehicle fleets.",
-    tech: ["React Native", "Swift Core", "Node.js", "Redis"],
+    tech: ["Node.js", "Redis Lobbies", "WebSockets", "Canvas API"],
+    metrics: [
+      { label: "Live Lobbies", val: "10k+" },
+      { label: "Response Delay", val: "14ms" },
+    ],
     color: "from-brand-orange to-[#FF0055]",
-    bgGlow: "rgba(255, 0, 85, 0.08)"
+    bgGlow: "rgba(255, 0, 85, 0.06)"
   }
 ];
 
 export default function HorizontalScrollPortfolio() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Track the vertical scroll of the parent container
   const { scrollYProgress } = useScroll({
     target: scrollRef,
   });
 
-  // Map vertical scroll progress (0 to 1) to horizontal translation (0% to -75%)
-  // Since we have 4 projects, shifting by 75% of the total width (400vw) shows slides 1, 2, 3, and 4.
+  // Since we have 4 projects, translating by 75% of the total width (400vw) shows slides 1, 2, 3, and 4.
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
 
   return (
-    <div ref={scrollRef} className="relative h-[300vh] bg-brand-black">
+    <div id="showcase" ref={scrollRef} className="relative h-[350vh] bg-brand-black">
       {/* Sticky viewport wrapper */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center">
         
@@ -76,111 +91,121 @@ export default function HorizontalScrollPortfolio() {
           {projects.map((project, index) => (
             <section
               key={index}
-              className="relative w-screen max-w-full h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 py-16 bg-brand-black select-none border-r border-brand-text/5 overflow-hidden flex-shrink-0"
+              className="relative w-screen max-w-full h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 py-16 bg-brand-black select-none border-r border-white/[0.04] overflow-hidden flex-shrink-0"
               style={{
-                background: `radial-gradient(circle at 70% 50%, ${project.bgGlow} 0%, transparent 60%)`
+                background: `radial-gradient(circle at 75% 50%, ${project.bgGlow} 0%, transparent 70%)`
               }}
             >
               {/* Glowing background grid lines */}
-              <div className="absolute inset-0 glowing-grid opacity-30 pointer-events-none" />
+              <div className="absolute inset-0 glowing-grid opacity-20 pointer-events-none" />
 
               {/* Large project number background */}
-              <div className="absolute right-10 bottom-10 lg:right-24 lg:bottom-12 text-[15rem] sm:text-[20rem] lg:text-[28rem] font-black text-brand-text/[0.02] font-mono leading-none pointer-events-none">
+              <div className="absolute right-12 bottom-12 lg:right-24 lg:bottom-12 text-[15rem] sm:text-[22rem] lg:text-[30rem] font-black text-white/[0.01] font-heading leading-none pointer-events-none tracking-tighter">
                 {project.num}
               </div>
 
-              {/* Project Layout Details */}
-              <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+              <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
                 
-                {/* Left column: content */}
+                {/* Left column: Content info */}
                 <div className="lg:col-span-6 flex flex-col items-start">
                   
                   {/* Category and Index */}
                   <div className="flex items-center gap-3 mb-6 text-xs font-mono tracking-widest text-brand-orange uppercase">
-                    <span className="px-2 py-0.5 rounded bg-brand-orange/15 border border-brand-orange/30">
-                      {project.num}
+                    <span className="px-2.5 py-0.5 rounded-full bg-brand-orange/10 border border-brand-orange/20 text-[10px]">
+                      CASE {project.num}
                     </span>
                     <span>{project.category}</span>
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-brand-text tracking-tight mb-8 leading-tight">
+                  <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-brand-text tracking-tighter mb-6 font-heading leading-none">
                     {project.title}
                   </h2>
 
                   {/* Description */}
-                  <p className="text-brand-muted text-base sm:text-lg leading-relaxed mb-8 max-w-xl">
+                  <p className="text-brand-muted text-sm sm:text-base leading-relaxed mb-8 max-w-xl font-sans">
                     {project.description}
                   </p>
 
-                  {/* Tech stack items */}
+                  {/* Metrics Row */}
+                  <div className="grid grid-cols-2 gap-4 w-full max-w-md mb-8">
+                    {project.metrics.map((m, idx) => (
+                      <div key={idx} className="p-4 rounded-2xl border border-white/[0.05] bg-white/[0.01] flex flex-col">
+                        <span className="text-2xl font-bold font-heading text-brand-orange leading-none mb-1">{m.val}</span>
+                        <span className="text-[10px] font-mono tracking-wider text-brand-muted uppercase">{m.label}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Tech stack */}
                   <div className="flex flex-wrap gap-2 mb-10">
                     {project.tech.map((t, idx) => (
                       <span
                         key={idx}
-                        className="px-3.5 py-1.5 rounded-lg border border-brand-text/5 bg-brand-surface/60 text-xs font-mono text-brand-text"
+                        className="px-3 py-1 rounded bg-white/[0.03] border border-white/[0.05] text-[10px] font-mono text-brand-text"
                       >
                         {t}
                       </span>
                     ))}
                   </div>
 
-                  {/* Call to action */}
-                  <button className="group flex items-center gap-2 text-brand-orange font-semibold tracking-wide hover:text-brand-dark-orange transition-colors">
-                    View Technical Breakdown 
+                  {/* CTA link */}
+                  <a 
+                    href={`/case-studies/${project.title.toLowerCase().replace(/ /g, "-").replace("-data-engine", "").replace("-ai-database", "").replace("-digital-portal", "").replace("-multiplayer", "")}`}
+                    className="group flex items-center gap-2 text-brand-orange font-semibold text-sm tracking-wider hover:text-brand-dark-orange transition-colors"
+                  >
+                    View Interactive Case Study 
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  </a>
                 </div>
 
-                {/* Right column: Graphic preview simulating a headless application UI */}
+                {/* Right column: Glass browser frame visual */}
                 <div className="lg:col-span-6 flex items-center justify-center">
-                  <div className="relative w-full max-w-lg aspect-video rounded-xl border border-brand-text/10 bg-brand-surface/60 p-4 shadow-2xl backdrop-blur-md overflow-hidden group/card hover:border-brand-orange/20 transition-colors duration-500">
+                  <div className="relative w-full max-w-lg aspect-video rounded-2xl border border-white/[0.06] bg-white/[0.01] p-4 shadow-2xl backdrop-blur-2xl overflow-hidden group/card hover:border-brand-orange/30 transition-all duration-500">
                     
                     {/* Header bar of simulated browser */}
-                    <div className="flex items-center justify-between mb-4 border-b border-brand-text/5 pb-3">
+                    <div className="flex items-center justify-between mb-4 border-b border-white/[0.05] pb-3">
                       <div className="flex gap-1.5 items-center">
-                        <div className="w-2.5 h-2.5 rounded-full bg-brand-text/15" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-brand-text/15" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-brand-text/15" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
                       </div>
-                      <div className="text-[10px] font-mono text-brand-muted/50 px-4 py-0.5 rounded bg-brand-black/40 border border-brand-text/5">
-                        https://api.blackhole.agency/v1/{project.title.toLowerCase().replace(/ /g, "-")}
+                      <div className="text-[9px] font-mono text-[#8E8E93] px-4 py-0.5 rounded-full bg-brand-black/55 border border-white/[0.05]">
+                        https://api.blackhole.systems/{project.title.toLowerCase().replace(/ /g, "-")}
                       </div>
-                      <Code2 className="w-3.5 h-3.5 text-brand-muted/40" />
+                      <Code2 className="w-3.5 h-3.5 text-white/20" />
                     </div>
 
                     {/* Content area: Grid of code and components */}
-                    <div className="grid grid-cols-3 gap-3 h-full pb-4">
+                    <div className="grid grid-cols-3 gap-3 h-full pb-4 select-none">
                       
                       {/* Left sub-box */}
-                      <div className="col-span-2 rounded bg-brand-black/40 border border-brand-text/5 p-3 flex flex-col justify-between">
-                        <div className="space-y-1.5">
+                      <div className="col-span-2 rounded-xl bg-brand-black/40 border border-white/[0.05] p-4 flex flex-col justify-between">
+                        <div className="space-y-2">
                           <div className="h-2 w-12 bg-brand-orange/30 rounded" />
-                          <div className="h-1.5 w-full bg-brand-muted/20 rounded" />
-                          <div className="h-1.5 w-5/6 bg-brand-muted/20 rounded" />
-                          <div className="h-1.5 w-4/6 bg-brand-muted/20 rounded" />
+                          <div className="h-1.5 w-full bg-white/5 rounded" />
+                          <div className="h-1.5 w-[85%] bg-white/5 rounded" />
                         </div>
-                        <div className="h-16 w-full rounded bg-gradient-to-r from-brand-orange/5 via-brand-orange/20 to-brand-dark-orange/5 border border-brand-orange/20 flex items-center justify-center">
-                          <span className="text-[10px] font-mono text-brand-orange tracking-widest animate-pulse">RENDERING SHADERS...</span>
+                        <div className="h-12 w-full rounded-lg bg-gradient-to-r from-brand-orange/5 via-brand-orange/15 to-brand-dark-orange/5 border border-brand-orange/20 flex items-center justify-center">
+                          <span className="text-[9px] font-mono text-brand-orange tracking-widest animate-pulse">RENDER PIPELINE ACTIVE</span>
                         </div>
                       </div>
 
                       {/* Right sub-box */}
-                      <div className="col-span-1 rounded bg-brand-black/40 border border-brand-text/5 p-3 flex flex-col justify-between items-center text-center">
-                        <div className={`w-12 h-12 rounded-full bg-gradient-to-tr ${project.color} flex items-center justify-center text-brand-black font-mono text-xs font-black`}>
-                          H-1
+                      <div className="col-span-1 rounded-xl bg-brand-black/40 border border-white/[0.05] p-4 flex flex-col justify-between items-center text-center">
+                        <div className={`w-10 h-10 rounded-full bg-gradient-to-tr ${project.color} flex items-center justify-center text-brand-black font-mono text-[10px] font-black`}>
+                          SYS
                         </div>
                         <div className="w-full space-y-1">
-                          <div className="h-1 w-full bg-brand-muted/15 rounded" />
-                          <div className="h-1 w-full bg-brand-muted/15 rounded" />
-                          <div className="h-1 w-2/3 bg-brand-muted/15 rounded mx-auto" />
+                          <div className="h-1 w-full bg-white/5 rounded" />
+                          <div className="h-1 w-[70%] bg-white/5 rounded mx-auto" />
                         </div>
                       </div>
 
                     </div>
 
-                    {/* Hover scanline effect */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-orange/[0.02] to-transparent -translate-y-full group-hover/card:translate-y-full transition-transform [animation-duration:3s] [animation-iteration-count:infinite] pointer-events-none" />
+                    {/* Scanline effect */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-orange/[0.01] to-transparent -translate-y-full group-hover/card:translate-y-full transition-transform [animation-duration:3.5s] [animation-iteration-count:infinite] pointer-events-none" />
                   </div>
                 </div>
 

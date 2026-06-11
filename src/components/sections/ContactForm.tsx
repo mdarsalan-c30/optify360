@@ -46,7 +46,6 @@ export default function ContactForm() {
 
     if (result.success) {
       setStatus({ type: "success", message: result.message || "Message sent successfully." });
-      // Reset form
       setName("");
       setEmail("");
       setCompany("");
@@ -57,85 +56,74 @@ export default function ContactForm() {
   };
 
   return (
-    <section id="contact" className="relative py-24 px-6 md:px-12 lg:px-24 bg-brand-black w-full overflow-hidden">
+    <section id="contact" className="relative py-32 px-6 md:px-12 lg:px-24 bg-brand-black w-full overflow-hidden">
       {/* Background Glow */}
-      <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-brand-orange/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/3 left-0 w-[450px] h-[450px] bg-brand-orange/[0.02] blur-[150px] rounded-full pointer-events-none" />
       
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
           
-          {/* Left Column: Direct info & context */}
-          <div className="lg:col-span-5 space-y-8">
+          {/* Left Column: Context Info */}
+          <div className="lg:col-span-5 space-y-10 select-none">
             <div>
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-orange/20 bg-brand-surface text-xs font-mono text-brand-orange mb-4 uppercase tracking-wider"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/5 bg-white/[0.02] backdrop-blur-md text-[10px] font-mono text-brand-orange mb-6 uppercase tracking-widest"
               >
                 <MessageSquare className="w-3.5 h-3.5" />
-                Get In Touch
+                Secure Lead Dispatch
               </motion.div>
-              <motion.h2
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-3xl md:text-5xl font-extrabold text-brand-text mb-6 leading-tight"
-              >
+              <h2 className="text-4xl md:text-5xl font-extrabold text-brand-text mb-6 font-heading tracking-tighter leading-none">
                 Let&apos;s Build Something Resilient
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-brand-muted leading-relaxed"
-              >
-                Have a project or general query? Send our engineers a message. We usually respond within 12 hours with deep technical feedback.
-              </motion.p>
+              </h2>
+              <p className="text-brand-muted leading-relaxed font-sans text-sm sm:text-base">
+                Have an ambitious system design or an indexation scale requirement? Transmit your metrics to our founder **Md Arsalan** directly.
+              </p>
             </div>
 
             <div className="space-y-6">
-              {/* Contact card 1 */}
-              <div className="flex items-start gap-4 p-4 rounded-xl border border-brand-text/5 bg-brand-surface/30">
-                <div className="p-3 rounded-lg bg-brand-orange/10 text-brand-orange">
+              {/* Contact Card 1 */}
+              <div className="flex items-start gap-5 p-5 rounded-2xl border border-white/[0.05] bg-white/[0.01] backdrop-blur-2xl">
+                <div className="p-3.5 rounded-xl bg-brand-orange/10 text-brand-orange shadow-lg">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-brand-text mb-1">Direct Channels</h4>
-                  <p className="text-xs text-brand-muted mb-1">For secure proposals & operations:</p>
+                  <h4 className="text-sm font-semibold text-brand-text mb-1 font-sans">Direct System Channels</h4>
+                  <p className="text-[11px] text-[#8E8E93] leading-relaxed mb-2 font-mono">For direct project logs:</p>
                   <a href="mailto:optify360@protonmail.com" className="block text-sm text-brand-orange hover:underline font-mono">
                     optify360@protonmail.com
                   </a>
-                  <a href="mailto:optify360official@gmail.com" className="block text-sm text-brand-orange hover:underline font-mono">
+                  <a href="mailto:optify360official@gmail.com" className="block text-sm text-brand-orange hover:underline font-mono mt-0.5">
                     optify360official@gmail.com
                   </a>
                 </div>
               </div>
 
-              {/* Contact card 2 */}
-              <div className="flex items-start gap-4 p-4 rounded-xl border border-brand-text/5 bg-brand-surface/30">
-                <div className="p-3 rounded-lg bg-brand-orange/10 text-brand-orange">
+              {/* Contact Card 2 */}
+              <div className="flex items-start gap-5 p-5 rounded-2xl border border-white/[0.05] bg-white/[0.01] backdrop-blur-2xl">
+                <div className="p-3.5 rounded-xl bg-brand-orange/10 text-brand-orange shadow-lg">
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-brand-text mb-1">Privacy & Architecture</h4>
-                  <p className="text-xs text-brand-muted leading-normal">
-                    All communications and database records are hosted on secure, encrypted Firestore servers adhering to modern zero-trust standards.
+                  <h4 className="text-sm font-semibold text-brand-text mb-1 font-sans">Zero-Trust Infrastructure</h4>
+                  <p className="text-[11px] text-[#8E8E93] leading-normal font-sans">
+                    Leads logs are stored in Firestore databases behind secure authentication rules, ensuring your technical metadata is isolated.
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Contact Form */}
-          <div className="lg:col-span-7 bg-brand-surface/50 border border-brand-text/5 rounded-2xl p-6 md:p-8 backdrop-blur-md">
+          {/* Right Column: Terminal Form */}
+          <div className="lg:col-span-7 bg-white/[0.01] border border-white/[0.05] rounded-3xl p-6 md:p-10 backdrop-blur-3xl shadow-[0_30px_100px_rgba(0,0,0,0.5)]">
             <form onSubmit={handleSubmit} className="space-y-6">
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="contact-name" className="block text-xs font-mono text-brand-muted uppercase mb-2">
+                  <label htmlFor="contact-name" className="block text-[10px] font-mono text-brand-muted uppercase mb-2">
                     Name *
                   </label>
                   <input
@@ -145,11 +133,11 @@ export default function ContactForm() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="John Doe"
-                    className="w-full bg-brand-black/50 border border-brand-text/10 rounded-lg px-4 py-3 text-brand-text focus:outline-none focus:border-brand-orange transition-colors"
+                    className="w-full bg-brand-black/40 border border-white/[0.05] rounded-xl px-4 py-3 text-sm text-brand-text focus:outline-none focus:border-brand-orange focus:bg-brand-black/60 transition-colors"
                   />
                 </div>
                 <div>
-                  <label htmlFor="contact-email" className="block text-xs font-mono text-brand-muted uppercase mb-2">
+                  <label htmlFor="contact-email" className="block text-[10px] font-mono text-brand-muted uppercase mb-2">
                     Email Address *
                   </label>
                   <input
@@ -159,14 +147,14 @@ export default function ContactForm() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="john@domain.com"
-                    className="w-full bg-brand-black/50 border border-brand-text/10 rounded-lg px-4 py-3 text-brand-text focus:outline-none focus:border-brand-orange transition-colors"
+                    className="w-full bg-brand-black/40 border border-white/[0.05] rounded-xl px-4 py-3 text-sm text-brand-text focus:outline-none focus:border-brand-orange focus:bg-brand-black/60 transition-colors"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="contact-company" className="block text-xs font-mono text-brand-muted uppercase mb-2">
+                  <label htmlFor="contact-company" className="block text-[10px] font-mono text-brand-muted uppercase mb-2">
                     Company Name
                   </label>
                   <input
@@ -175,18 +163,18 @@ export default function ContactForm() {
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
                     placeholder="Optional"
-                    className="w-full bg-brand-black/50 border border-brand-text/10 rounded-lg px-4 py-3 text-brand-text focus:outline-none focus:border-brand-orange transition-colors"
+                    className="w-full bg-brand-black/40 border border-white/[0.05] rounded-xl px-4 py-3 text-sm text-brand-text focus:outline-none focus:border-brand-orange focus:bg-brand-black/60 transition-colors"
                   />
                 </div>
                 <div>
-                  <label htmlFor="contact-service" className="block text-xs font-mono text-brand-muted uppercase mb-2">
-                    Primary Service Need
+                  <label htmlFor="contact-service" className="block text-[10px] font-mono text-brand-muted uppercase mb-2">
+                    System Category
                   </label>
                   <select
                     id="contact-service"
                     value={service}
                     onChange={(e) => setService(e.target.value)}
-                    className="w-full bg-brand-black/50 border border-brand-text/10 rounded-lg px-4 py-3 text-brand-text focus:outline-none focus:border-brand-orange transition-colors appearance-none cursor-pointer"
+                    className="w-full bg-brand-black/40 border border-white/[0.05] rounded-xl px-4 py-3 text-sm text-brand-text focus:outline-none focus:border-brand-orange focus:bg-brand-black/60 transition-colors appearance-none cursor-pointer"
                   >
                     {SERVICES.map((s) => (
                       <option key={s.id} value={s.id} className="bg-brand-surface text-brand-text">
@@ -198,8 +186,8 @@ export default function ContactForm() {
               </div>
 
               <div>
-                <label htmlFor="contact-message" className="block text-xs font-mono text-brand-muted uppercase mb-2">
-                  Message *
+                <label htmlFor="contact-message" className="block text-[10px] font-mono text-brand-muted uppercase mb-2">
+                  System Requirements / Message *
                 </label>
                 <textarea
                   id="contact-message"
@@ -207,8 +195,8 @@ export default function ContactForm() {
                   rows={5}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Tell us about your project requirements, challenges, or goals..."
-                  className="w-full bg-brand-black/50 border border-brand-text/10 rounded-lg px-4 py-3 text-brand-text focus:outline-none focus:border-brand-orange transition-colors resize-none"
+                  placeholder="Describe your design specifications or traffic objectives..."
+                  className="w-full bg-brand-black/40 border border-white/[0.05] rounded-xl px-4 py-3 text-sm text-brand-text focus:outline-none focus:border-brand-orange focus:bg-brand-black/60 transition-colors resize-none"
                 />
               </div>
 
@@ -217,9 +205,9 @@ export default function ContactForm() {
                   <AnimatePresence mode="wait">
                     {status && (
                       <motion.div
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
+                        exit={{ opacity: 0, y: -8 }}
                         className={`flex items-center gap-2 text-sm ${
                           status.type === "success" ? "text-emerald-400" : "text-rose-400"
                         }`}
@@ -238,16 +226,16 @@ export default function ContactForm() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="relative group overflow-hidden flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-brand-orange text-brand-black font-semibold tracking-wide transition-all duration-300 hover:bg-brand-dark-orange cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative group overflow-hidden flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-brand-orange text-brand-black font-semibold tracking-wide transition-all duration-300 hover:bg-brand-dark-orange cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Initiating Link...
+                      Transmitting...
                     </>
                   ) : (
                     <>
-                      Transmit Message <Send className="w-4 h-4" />
+                      Transmit Metadata <Send className="w-4 h-4" />
                     </>
                   )}
                 </button>
