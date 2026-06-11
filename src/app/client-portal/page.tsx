@@ -167,14 +167,15 @@ export default function ClientPortalPage() {
               await fetchClientData(user.uid, record.clientId);
             }
           } else {
-            // Not a client — sign out
+            // User successfully fetched but is NOT a client
             await signOut(auth);
             setLoginError("Access denied. This portal is for clients only.");
             setIsLoggedIn(false);
             setUserRecord(null);
           }
-        } catch {
-          await signOut(auth);
+        } catch (err: any) {
+          console.error("Auth sync error:", err);
+          setLoginError(`Verification delayed: ${err.message}. Please refresh.`);
           setIsLoggedIn(false);
           setUserRecord(null);
         }

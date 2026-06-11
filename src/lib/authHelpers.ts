@@ -14,17 +14,10 @@ export interface UserRecord {
   createdAt?: any;
 }
 
-/**
- * Fetch the full user record from Firestore.
- */
 export async function getUserRecord(uid: string): Promise<UserRecord | null> {
-  try {
-    const snap = await getDoc(doc(db, 'users', uid));
-    if (!snap.exists()) return null;
-    return snap.data() as UserRecord;
-  } catch {
-    return null;
-  }
+  const snap = await getDoc(doc(db, 'users', uid));
+  if (!snap.exists()) return null;
+  return snap.data() as UserRecord;
 }
 
 /**

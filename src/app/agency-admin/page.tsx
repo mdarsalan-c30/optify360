@@ -214,21 +214,29 @@ export default function AgencyAdminPage() {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        let record = await getUserRecord(user.uid);
+        try {
+          let record = await getUserRecord(user.uid);
 
-        // Auto-create admin record for whitelisted emails on first login
-        if (!record && ADMIN_EMAILS.includes(user.email || "")) {
-          await upsertUserRecord(user.uid, user.email!, "admin", user.email!.split("@")[0]);
-          record = await getUserRecord(user.uid);
-        }
+          // Auto-create admin record for whitelisted emails on first login
+          if (!record && ADMIN_EMAILS.includes(user.email || "")) {
+            await upsertUserRecord(user.uid, user.email!, "admin", user.email!.split("@")[0]);
+            record = await getUserRecord(user.uid);
+          }
 
-        if (record?.role === "admin") {
-          setIsLoggedIn(true);
-          fetchAllData();
-        } else {
-          await signOut(auth);
-          setLoginError("Access denied. This portal is for agency admins only.");
-          setIsLoggedIn(false);
+          if (record?.role === "admin") {
+            setIsLoggedIn(true);
+            fetchAllData();
+          } else {
+            // User successfully fetched but is NOT an admin
+            await signOut(auth);
+            setLoginError("Access denied. This portal is for agency admins only.");
+            setIsLoggedIn(false);
+          }
+        } catch (err: any) {
+          console.error("Auth sync error:", err);
+          // Don't sign out on network/permission errors to prevent aggressive logout
+          setLoginError(`Verification delayed: ${err.message}. Please refresh.`);
+          setIsLoggedIn(false); // Just hide dashboard, don't force signOut
         }
       } else {
         setIsLoggedIn(false);
