@@ -91,7 +91,8 @@ function pageFooter(doc: jsPDF, pageW: number, pageH: number, text: string) {
 
 export async function generateInvoicePDF(
   invoice: InvoiceData,
-  agency: AgencySettings
+  agency: AgencySettings,
+  action: 'save' | 'view' = 'save'
 ): Promise<void> {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const W = doc.internal.pageSize.getWidth();
@@ -190,15 +191,15 @@ export async function generateInvoicePDF(
     head: [['#', 'Description', 'Qty', 'Unit Rate', 'Amount']],
     body: rows,
     theme: 'plain',
-    styles: { font: 'helvetica', fontSize: 8.5, textColor: [210, 210, 210], cellPadding: { top: 4, bottom: 4, left: 4, right: 4 } },
-    headStyles: { fillColor: [28, 28, 28], textColor: [255, 107, 0], fontStyle: 'bold', fontSize: 7.5 },
+    styles: { font: 'helvetica', fontSize: 9.5, textColor: [210, 210, 210], cellPadding: { top: 5, bottom: 5, left: 5, right: 5 } },
+    headStyles: { fillColor: [28, 28, 28], textColor: [255, 107, 0], fontStyle: 'bold', fontSize: 8.5 },
     alternateRowStyles: { fillColor: [18, 18, 18] },
     bodyStyles: { fillColor: [12, 12, 12] },
     columnStyles: {
-      0: { halign: 'center', cellWidth: 10 },
-      2: { halign: 'center', cellWidth: 14 },
-      3: { halign: 'right', cellWidth: 32 },
-      4: { halign: 'right', cellWidth: 32 },
+      0: { halign: 'center', cellWidth: 12 },
+      2: { halign: 'center', cellWidth: 16 },
+      3: { halign: 'right', cellWidth: 35 },
+      4: { halign: 'right', cellWidth: 35 },
     },
     margin: { left: 14, right: 14 },
     tableLineColor: [35, 35, 35],
@@ -239,29 +240,30 @@ export async function generateInvoicePDF(
   let notesY = ty + 14;
   if (invoice.notes) {
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7.5);
+    doc.setFontSize(8.5);
     doc.setTextColor(...O);
     doc.text('NOTES', 14, notesY);
-    notesY += 5;
+    notesY += 6;
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(150, 150, 150);
+    doc.setFontSize(9.5);
+    doc.setTextColor(170, 170, 170);
     const noteLines = doc.splitTextToSize(invoice.notes, W - 28);
     doc.text(noteLines, 14, notesY);
-    notesY += noteLines.length * 4.5;
+    notesY += noteLines.length * 5.5;
   }
 
   if (invoice.paymentTerms) {
-    notesY += 3;
+    notesY += 4;
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7.5);
+    doc.setFontSize(8.5);
     doc.setTextColor(...O);
     doc.text('PAYMENT TERMS', 14, notesY);
-    notesY += 5;
+    notesY += 6;
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(150, 150, 150);
-    doc.text(invoice.paymentTerms, 14, notesY);
+    doc.setFontSize(9.5);
+    doc.setTextColor(170, 170, 170);
+    const termLines = doc.splitTextToSize(invoice.paymentTerms, W - 28);
+    doc.text(termLines, 14, notesY);
   }
 
   // ── Signature Footer ──
@@ -285,14 +287,20 @@ export async function generateInvoicePDF(
   doc.text(agency.agencyEmail || 'optify360official@gmail.com', 14, sigY + 32);
 
   pageFooter(doc, W, H, 'This is a computer-generated document. | Optify360 Digital Solutions');
-  doc.save(`INV_${invoice.invoiceNumber}_${invoice.clientName.replace(/\s+/g, '_')}.pdf`);
+  
+  if (action === 'view') {
+    window.open(doc.output('bloburl'), '_blank');
+  } else {
+    doc.save(`INV_${invoice.invoiceNumber}_${invoice.clientName.replace(/\s+/g, '_')}.pdf`);
+  }
 }
 
 // ── Contract PDF ───────────────────────────────────────────────────────────────
 
 export async function generateContractPDF(
   contract: ContractData,
-  agency: AgencySettings
+  agency: AgencySettings,
+  action: 'save' | 'view' = 'save'
 ): Promise<void> {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const W = doc.internal.pageSize.getWidth();
@@ -385,16 +393,16 @@ export async function generateContractPDF(
   // Section helper
   const section = (num: string, title: string, body: string) => {
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
+    doc.setFontSize(9.5);
     doc.setTextColor(...O);
-    doc.text(`${num}. ${title}`, 14, y);
-    y += 5;
+    doc.text(`${num}. ${title}`, 20, y);
+    y += 6;
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7.8);
-    doc.setTextColor(180, 180, 180);
-    const lines = doc.splitTextToSize(body, W - 28);
-    doc.text(lines, 14, y);
-    y += lines.length * 4 + 5;
+    doc.setFontSize(9.5);
+    doc.setTextColor(200, 200, 200);
+    const lines = doc.splitTextToSize(body, W - 40); // 20mm margin on both sides
+    doc.text(lines, 20, y);
+    y += lines.length * 5 + 7;
     if (y > H - 60) {
       doc.addPage();
       doc.setFillColor(...DARK);
@@ -508,5 +516,9 @@ export async function generateContractPDF(
   pageFooter(doc, W, currentH,
     'This is a legally binding digital service agreement. Generated & issued by Optify360 Digital Solutions.');
 
-  doc.save(`CONTRACT_${contract.contractNumber}_${contract.clientName.replace(/\s+/g, '_')}.pdf`);
+  if (action === 'view') {
+    window.open(doc.output('bloburl'), '_blank');
+  } else {
+    doc.save(`CONTRACT_${contract.contractNumber}_${contract.clientName.replace(/\s+/g, '_')}.pdf`);
+  }
 }

@@ -471,7 +471,7 @@ export default function AgencyAdminPage() {
     notify(`Invoice marked as ${status}.`); fetchInvoices();
   };
 
-  const downloadInvoice = async (inv: Invoice) => {
+  const downloadInvoice = async (inv: Invoice, action: 'save' | 'view' = 'save') => {
     setGeneratingPDF(inv.id);
     try {
       const data: InvoiceData = {
@@ -480,7 +480,7 @@ export default function AgencyAdminPage() {
         notes: inv.notes, paymentTerms: inv.paymentTerms,
         clientName: inv.clientName, clientEmail: inv.clientEmail, clientCompany: inv.clientCompany,
       };
-      await generateInvoicePDF(data, agencySettings);
+      await generateInvoicePDF(data, agencySettings, action);
     } finally { setGeneratingPDF(null); }
   };
 
@@ -546,7 +546,7 @@ export default function AgencyAdminPage() {
     notify(`Contract marked as ${status}.`); fetchContracts();
   };
 
-  const downloadContract = async (c: Contract) => {
+  const downloadContract = async (c: Contract, action: 'save' | 'view' = 'save') => {
     setGeneratingPDF(c.id);
     try {
       const data: ContractData = {
@@ -558,7 +558,7 @@ export default function AgencyAdminPage() {
         signedByClient: c.signedByClient, clientSignatureName: c.clientSignatureName,
         signedAt: c.signedAt,
       };
-      await generateContractPDF(data, agencySettings);
+      await generateContractPDF(data, agencySettings, action);
     } finally { setGeneratingPDF(null); }
   };
 
@@ -810,8 +810,11 @@ export default function AgencyAdminPage() {
                         <td className="px-4 py-3"><Badge label={inv.status} /></td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
-                            <button onClick={() => downloadInvoice(inv)} disabled={generatingPDF === inv.id} title="Download PDF" className="text-zinc-500 hover:text-[#FF6B00] transition-colors disabled:opacity-50">
-                              <Download className="w-4 h-4" />
+                            <button onClick={() => downloadInvoice(inv, 'view')} disabled={generatingPDF === inv.id} title="View PDF" className="text-zinc-500 hover:text-white transition-colors disabled:opacity-50">
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button onClick={() => downloadInvoice(inv, 'save')} disabled={generatingPDF === inv.id} title="Download PDF" className="text-zinc-500 hover:text-[#FF6B00] transition-colors disabled:opacity-50">
+                              {generatingPDF === inv.id ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
                             </button>
                             {inv.status !== "Paid" && (
                               <button onClick={() => updateInvoiceStatus(inv.id, inv.status === "Draft" ? "Sent" : "Paid")} title={inv.status === "Draft" ? "Mark Sent" : "Mark Paid"} className="text-zinc-500 hover:text-emerald-400 transition-colors">
@@ -874,8 +877,11 @@ export default function AgencyAdminPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <button onClick={() => downloadContract(c)} disabled={generatingPDF === c.id} title="Download PDF" className="text-zinc-500 hover:text-violet-400 transition-colors disabled:opacity-50">
-                            <Download className="w-4 h-4" />
+                          <button onClick={() => downloadContract(c, 'view')} disabled={generatingPDF === c.id} title="View PDF" className="text-zinc-500 hover:text-white transition-colors disabled:opacity-50">
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => downloadContract(c, 'save')} disabled={generatingPDF === c.id} title="Download PDF" className="text-zinc-500 hover:text-violet-400 transition-colors disabled:opacity-50">
+                            {generatingPDF === c.id ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
                           </button>
                           {c.status === "Draft" && (
                             <button onClick={() => updateContractStatus(c.id, "Sent")} title="Mark Sent" className="text-zinc-500 hover:text-blue-400 transition-colors"><Send className="w-4 h-4" /></button>

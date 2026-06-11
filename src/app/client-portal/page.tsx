@@ -32,6 +32,7 @@ import {
   CheckCircle,
   Clock,
   Download,
+  Eye,
   PenLine,
   X,
   Shield,
@@ -297,10 +298,10 @@ export default function ClientPortalPage() {
   };
 
   // ── PDF Downloads ──────────────────────────────────────────────────────────
-  const handleDownloadInvoice = async (inv: InvoiceDoc) => {
+  const handleDownloadInvoice = async (inv: InvoiceDoc, action: 'save' | 'view' = 'save') => {
     setDownloadingPdf(`inv-${inv.id}`);
     try {
-      await generateInvoicePDF(inv, agencySettings);
+      await generateInvoicePDF(inv, agencySettings, action);
     } catch (err) {
       console.error("Error generating invoice PDF:", err);
     } finally {
@@ -308,10 +309,10 @@ export default function ClientPortalPage() {
     }
   };
 
-  const handleDownloadContract = async (con: ContractDoc) => {
+  const handleDownloadContract = async (con: ContractDoc, action: 'save' | 'view' = 'save') => {
     setDownloadingPdf(`con-${con.id}`);
     try {
-      await generateContractPDF(con, agencySettings);
+      await generateContractPDF(con, agencySettings, action);
     } catch (err) {
       console.error("Error generating contract PDF:", err);
     } finally {
@@ -656,18 +657,27 @@ export default function ClientPortalPage() {
                                 </span>
                               </td>
                               <td className="px-6 py-4 text-right">
-                                <button
-                                  onClick={() => handleDownloadInvoice(inv)}
-                                  disabled={isDownloading}
-                                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#FF6B00] bg-[#FF6B00]/10 border border-[#FF6B00]/20 hover:bg-[#FF6B00]/20 disabled:opacity-50 px-3 py-1.5 rounded-lg transition-colors"
-                                >
-                                  {isDownloading ? (
-                                    <div className="w-3 h-3 border border-[#FF6B00] border-t-transparent rounded-full animate-spin" />
-                                  ) : (
-                                    <Download className="w-3 h-3" />
-                                  )}
-                                  PDF
-                                </button>
+                                <div className="flex items-center justify-end gap-2">
+                                  <button
+                                    onClick={() => handleDownloadInvoice(inv, 'view')}
+                                    disabled={isDownloading}
+                                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-white/10 border border-white/20 hover:bg-white/20 disabled:opacity-50 px-3 py-1.5 rounded-lg transition-colors"
+                                  >
+                                    <Eye className="w-3 h-3" /> View
+                                  </button>
+                                  <button
+                                    onClick={() => handleDownloadInvoice(inv, 'save')}
+                                    disabled={isDownloading}
+                                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#FF6B00] bg-[#FF6B00]/10 border border-[#FF6B00]/20 hover:bg-[#FF6B00]/20 disabled:opacity-50 px-3 py-1.5 rounded-lg transition-colors"
+                                  >
+                                    {isDownloading ? (
+                                      <div className="w-3 h-3 border border-[#FF6B00] border-t-transparent rounded-full animate-spin" />
+                                    ) : (
+                                      <Download className="w-3 h-3" />
+                                    )}
+                                    PDF
+                                  </button>
+                                </div>
                               </td>
                             </tr>
                           );
@@ -700,18 +710,27 @@ export default function ClientPortalPage() {
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="font-semibold text-sm">{formatAmount(total, inv.currency)}</span>
-                            <button
-                              onClick={() => handleDownloadInvoice(inv)}
-                              disabled={isDownloading}
-                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#FF6B00] bg-[#FF6B00]/10 border border-[#FF6B00]/20 hover:bg-[#FF6B00]/20 disabled:opacity-50 px-3 py-1.5 rounded-lg transition-colors"
-                            >
-                              {isDownloading ? (
-                                <div className="w-3 h-3 border border-[#FF6B00] border-t-transparent rounded-full animate-spin" />
-                              ) : (
-                                <Download className="w-3 h-3" />
-                              )}
-                              Download PDF
-                            </button>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleDownloadInvoice(inv, 'view')}
+                                disabled={isDownloading}
+                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-white/10 border border-white/20 hover:bg-white/20 disabled:opacity-50 px-3 py-1.5 rounded-lg transition-colors"
+                              >
+                                <Eye className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={() => handleDownloadInvoice(inv, 'save')}
+                                disabled={isDownloading}
+                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#FF6B00] bg-[#FF6B00]/10 border border-[#FF6B00]/20 hover:bg-[#FF6B00]/20 disabled:opacity-50 px-3 py-1.5 rounded-lg transition-colors"
+                              >
+                                {isDownloading ? (
+                                  <div className="w-3 h-3 border border-[#FF6B00] border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                  <Download className="w-3 h-3" />
+                                )}
+                                PDF
+                              </button>
+                            </div>
                           </div>
                         </div>
                       );
@@ -782,7 +801,7 @@ export default function ClientPortalPage() {
                               </span>
                               {con.duration && <span>Duration: {con.duration}</span>}
                             </div>
-
+                            
                             {/* Signed confirmation */}
                             {isSigned && (
                               <div className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-green-400 bg-green-500/10 border border-green-500/20 px-3 py-1.5 rounded-lg">
@@ -795,9 +814,18 @@ export default function ClientPortalPage() {
 
                           {/* Action buttons */}
                           <div className="flex items-center gap-2 shrink-0">
+                            {/* View PDF */}
+                            <button
+                              onClick={() => handleDownloadContract(con, 'view')}
+                              disabled={isDownloading}
+                              className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-white bg-white/10 border border-white/20 hover:bg-white/20 disabled:opacity-50 transition-colors"
+                              title="View PDF"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
                             {/* Download PDF */}
                             <button
-                              onClick={() => handleDownloadContract(con)}
+                              onClick={() => handleDownloadContract(con, 'save')}
                               disabled={isDownloading}
                               className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#FF6B00] bg-[#FF6B00]/10 border border-[#FF6B00]/20 hover:bg-[#FF6B00]/20 disabled:opacity-50 px-3 py-2 rounded-lg transition-colors"
                             >
