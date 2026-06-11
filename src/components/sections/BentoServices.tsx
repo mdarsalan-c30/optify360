@@ -105,7 +105,7 @@ export default function BentoServices() {
             description="Highly responsive, performant platforms developed on solid headless infrastructures with fluid scroll mechanics."
             icon={<Code2 className="w-6 h-6" />}
             gridClass="md:col-span-2 lg:col-span-2"
-            yOffset={[-30, 30]}
+            yOffset={[0, 0]}
           >
             {/* Custom Graphic: Floating UI elements */}
             <div className="w-full h-full px-6 flex items-center justify-between relative">
@@ -134,7 +134,7 @@ export default function BentoServices() {
             description="Algorithmic optimization mapping and structural schemas built directly into the system's DNA."
             icon={<Search className="w-6 h-6" />}
             gridClass="md:col-span-1 lg:col-span-1"
-            yOffset={[20, -20]}
+            yOffset={[0, 0]}
           >
             {/* Custom Graphic: Glowing performance scale */}
             <div className="relative w-full h-full flex items-center justify-center">
@@ -163,7 +163,7 @@ export default function BentoServices() {
             description="Deep neural network routing and custom agentic microservices automating key visual operations."
             icon={<Cpu className="w-6 h-6" />}
             gridClass="md:col-span-1 lg:col-span-1"
-            yOffset={[40, -40]}
+            yOffset={[0, 0]}
           >
             {/* Custom Graphic: Interactive glowing nodes */}
             <div className="relative w-full h-full flex items-center justify-center">
@@ -187,7 +187,7 @@ export default function BentoServices() {
             description="Hyper-threaded APIs executing data pipelines, database syncs, and visual asset delivery workflows."
             icon={<RefreshCw className="w-6 h-6 animate-spin [animation-duration:15s]" />}
             gridClass="md:col-span-2 lg:col-span-2"
-            yOffset={[-15, 15]}
+            yOffset={[0, 0]}
           >
             {/* Custom Graphic: Dynamic code scroll & flow */}
             <div className="w-full h-full flex items-center justify-around px-8 gap-4">
@@ -217,7 +217,7 @@ export default function BentoServices() {
             description="Adaptive layouts structured for tactile interactions with smooth gesture interfaces and native optimizations."
             icon={<Smartphone className="w-6 h-6" />}
             gridClass="md:col-span-1 lg:col-span-1"
-            yOffset={[-50, 50]}
+            yOffset={[0, 0]}
           >
             {/* Custom Graphic: Smartphone shell preview */}
             <div className="relative w-24 h-40 mt-8 rounded-t-xl border-x border-t border-brand-text/20 bg-brand-black flex flex-col p-1.5 gap-2">
@@ -237,7 +237,7 @@ export default function BentoServices() {
             description="High-velocity user funnel designs, structural analytics setups, and visual telemetry dashboards."
             icon={<TrendingUp className="w-6 h-6" />}
             gridClass="md:col-span-2 lg:col-span-2"
-            yOffset={[15, -15]}
+            yOffset={[0, 0]}
           >
             {/* Custom Graphic: Data growth timeline */}
             <div className="w-full h-full flex items-center justify-between px-10">

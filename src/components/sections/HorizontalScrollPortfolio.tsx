@@ -68,7 +68,7 @@ export default function HorizontalScrollPortfolio() {
   return (
     <div ref={scrollRef} className="relative h-[300vh] bg-brand-black">
       {/* Sticky viewport wrapper */}
-      <div className="sticky top-0 h-screen w-screen overflow-hidden flex items-center">
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center">
         
         {/* Horizontal scroll track */}
         <motion.div style={{ x }} className="flex h-full w-[400vw]">
@@ -76,7 +76,7 @@ export default function HorizontalScrollPortfolio() {
           {projects.map((project, index) => (
             <section
               key={index}
-              className="relative w-screen h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 py-16 bg-brand-black select-none border-r border-brand-text/5 overflow-hidden flex-shrink-0"
+              className="relative w-screen max-w-full h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 py-16 bg-brand-black select-none border-r border-brand-text/5 overflow-hidden flex-shrink-0"
               style={{
                 background: `radial-gradient(circle at 70% 50%, ${project.bgGlow} 0%, transparent 60%)`
               }}

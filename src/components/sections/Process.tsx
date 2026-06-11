@@ -74,6 +74,12 @@ export default function Process() {
   const step4Opacity = useTransform(scrollYProgress, [0.7, 0.75, 0.95, 1], [0, 1, 1, 1]);
   const step4Scale = useTransform(scrollYProgress, [0.7, 0.75, 0.95, 1], [0.9, 1, 1, 1]);
 
+  // Y-translations to prevent overlap collisions
+  const step1Y = useTransform(scrollYProgress, [0, 0.2, 0.25, 0.3], [0, 0, -50, -50]);
+  const step2Y = useTransform(scrollYProgress, [0.2, 0.25, 0.45, 0.5], [50, 0, 0, -50]);
+  const step3Y = useTransform(scrollYProgress, [0.45, 0.5, 0.7, 0.75], [50, 0, 0, -50]);
+  const step4Y = useTransform(scrollYProgress, [0.7, 0.75, 0.95, 1], [50, 0, 0, 0]);
+
   // Map progress to left index bullet tracker
   const indicatorY = useTransform(scrollYProgress, [0, 1], ["0%", "300%"]);
 
@@ -106,7 +112,7 @@ export default function Process() {
 
         {/* Step 1 Page */}
         <motion.div 
-          style={{ opacity: step1Opacity, scale: step1Scale }}
+          style={{ opacity: step1Opacity, scale: step1Scale, y: step1Y }}
           className="absolute inset-0 w-full h-full flex items-center px-12 md:px-24 lg:px-48"
         >
           <StepContent step={steps[0]} />
@@ -114,7 +120,7 @@ export default function Process() {
 
         {/* Step 2 Page */}
         <motion.div 
-          style={{ opacity: step2Opacity, scale: step2Scale }}
+          style={{ opacity: step2Opacity, scale: step2Scale, y: step2Y }}
           className="absolute inset-0 w-full h-full flex items-center px-12 md:px-24 lg:px-48"
         >
           <StepContent step={steps[1]} />
@@ -122,7 +128,7 @@ export default function Process() {
 
         {/* Step 3 Page */}
         <motion.div 
-          style={{ opacity: step3Opacity, scale: step3Scale }}
+          style={{ opacity: step3Opacity, scale: step3Scale, y: step3Y }}
           className="absolute inset-0 w-full h-full flex items-center px-12 md:px-24 lg:px-48"
         >
           <StepContent step={steps[2]} />
@@ -130,7 +136,7 @@ export default function Process() {
 
         {/* Step 4 Page */}
         <motion.div 
-          style={{ opacity: step4Opacity, scale: step4Scale }}
+          style={{ opacity: step4Opacity, scale: step4Scale, y: step4Y }}
           className="absolute inset-0 w-full h-full flex items-center px-12 md:px-24 lg:px-48"
         >
           <StepContent step={steps[3]} />
