@@ -15,7 +15,7 @@ interface Testimonial {
 
 const column1Testimonials: Testimonial[] = [
   {
-    quote: "BLACKHOLE rebuilt our API gateway and web structures from the floor up. System query latency decreased by 74%, and our frontend animations feel completely native.",
+    quote: "optify360 rebuilt our API gateway and web structures from the floor up. System query latency decreased by 74%, and our frontend animations feel completely native.",
     author: "Elena Rostova",
     role: "Chief Technology Officer",
     company: "VORTEX.IO",

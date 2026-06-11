@@ -25,16 +25,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `${post.title} | BLACKHOLE Blog`,
+    title: `${post.title} | optify360 Blog`,
     description: post.description,
     openGraph: {
-      title: `${post.title} | BLACKHOLE Blog`,
+      title: `${post.title} | optify360 Blog`,
       description: post.description,
-      url: `https://optify360.com/blog/${post.slug}`,
+      url: `https://optify360.vercel.app/blog/${post.slug}`,
       type: "article",
       images: [
         {
-          url: post.image || `https://optify360.com/og-${post.slug}.jpg`,
+          url: post.image || `https://optify360.vercel.app/og-${post.slug}.jpg`,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -43,9 +43,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title: `${post.title} | BLACKHOLE Blog`,
+      title: `${post.title} | optify360 Blog`,
       description: post.description,
-      images: [post.image || `https://optify360.com/og-${post.slug}.jpg`],
+      images: [post.image || `https://optify360.vercel.app/og-${post.slug}.jpg`],
     },
   };
 }
@@ -65,8 +65,8 @@ export default async function BlogPostPage({ params }: PageProps) {
         title={post.title}
         description={post.description}
         datePublished={post.date}
-        image={post.image || `https://optify360.com/og-${post.slug}.jpg`}
-        url={`https://optify360.com/blog/${post.slug}`}
+        image={post.image || `https://optify360.vercel.app/og-${post.slug}.jpg`}
+        url={`https://optify360.vercel.app/blog/${post.slug}`}
         authorName={post.author}
       />
 

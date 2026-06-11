@@ -16,7 +16,7 @@ export default function Header() {
         <div className="w-4 h-4 rounded-full bg-brand-orange orange-glow-sm group-hover:scale-110 transition-transform flex items-center justify-center">
           <div className="w-2 h-2 rounded-full bg-brand-black" />
         </div>
-        BLACK<span className="text-brand-orange group-hover:text-brand-dark-orange transition-colors">HOLE</span>
+        optify<span className="text-brand-orange group-hover:text-brand-dark-orange transition-colors">360</span>
       </a>
 
       {/* Nav links (hidden on mobile) */}

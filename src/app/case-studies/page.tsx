@@ -4,27 +4,27 @@ import { caseStudies } from "@/content/caseStudies";
 import { OrganizationSchema } from "@/components/json-ld";
 
 export const metadata: Metadata = {
-  title: "Case Studies | BLACKHOLE & optify360",
+  title: "Case Studies | optify360",
   description: "Read real-world case studies for ClimateVerse, PDFVerse, Mynra AI, and StudyCubs. See how Md Arsalan and the optify360 team drive engineering and SEO success.",
   openGraph: {
-    title: "Case Studies | BLACKHOLE & optify360",
+    title: "Case Studies | optify360",
     description: "Read real-world case studies for ClimateVerse, PDFVerse, Mynra AI, and StudyCubs.",
-    url: "https://optify360.com/case-studies",
+    url: "https://optify360.vercel.app/case-studies",
     type: "website",
     images: [
       {
-        url: "https://optify360.com/og-case-studies.jpg",
+        url: "https://optify360.vercel.app/og-case-studies.jpg",
         width: 1200,
         height: 630,
-        alt: "BLACKHOLE Case Studies",
+        alt: "optify360 Case Studies",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Case Studies | BLACKHOLE & optify360",
+    title: "Case Studies | optify360",
     description: "Read real-world case studies for ClimateVerse, PDFVerse, Mynra AI, and StudyCubs.",
-    images: ["https://optify360.com/og-case-studies.jpg"],
+    images: ["https://optify360.vercel.app/og-case-studies.jpg"],
   },
 };
 
@@ -43,7 +43,7 @@ export default function CaseStudiesPage() {
             Case Studies
           </h1>
           <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl">
-            A showcase of deep engineering, high-fidelity visualizations, semantic AI, low-latency edge computing, and gamified learning platforms designed and shipped by BLACKHOLE under the leadership of Md Arsalan.
+            A showcase of deep engineering, high-fidelity visualizations, semantic AI, low-latency edge computing, and gamified learning platforms designed and shipped by optify360 under the leadership of Md Arsalan.
           </p>
         </header>
 

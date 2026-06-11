@@ -15,8 +15,8 @@ import { FAQSchema, OrganizationSchema } from "@/components/json-ld";
 export default function Home() {
   const faqs = [
     {
-      question: "What core tech stack does BLACKHOLE engineer on?",
-      answer: "We engineer high-performance platforms using Next.js 15, React 19, Tailwind CSS v4, and Framer Motion. For backend services, we integrate Go, Rust, Python API routers, Redis caching networks, and headless CMS frameworks to maintain speed and telemetry control."
+      question: "What core tech stack does optify360 engineer on?",
+      answer: "We engineer high-performance platforms using Next.js 16, React 19, Tailwind CSS v4, and Framer Motion. For backend services, we integrate Go, Rust, Python API routers, Redis caching networks, and headless CMS frameworks to maintain speed and telemetry control."
     },
     {
       question: "How do you build complex animations without slowing page speed?",

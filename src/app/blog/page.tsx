@@ -4,27 +4,27 @@ import { getBlogPosts } from "@/utils/blog";
 import { OrganizationSchema } from "@/components/json-ld";
 
 export const metadata: Metadata = {
-  title: "Blog | BLACKHOLE & optify360",
+  title: "Blog | optify360",
   description: "Read the latest engineering articles, low-latency API walkthroughs, and Next.js SEO guides written by Md Arsalan and the optify360 team.",
   openGraph: {
-    title: "Blog | BLACKHOLE & optify360",
+    title: "Blog | optify360",
     description: "Read the latest engineering articles, low-latency API walkthroughs, and Next.js SEO guides.",
-    url: "https://optify360.com/blog",
+    url: "https://optify360.vercel.app/blog",
     type: "website",
     images: [
       {
-        url: "https://optify360.com/og-blog.jpg",
+        url: "https://optify360.vercel.app/og-blog.jpg",
         width: 1200,
         height: 630,
-        alt: "BLACKHOLE Blog",
+        alt: "optify360 Blog",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Blog | BLACKHOLE & optify360",
+    title: "Blog | optify360",
     description: "Read the latest engineering articles, low-latency API walkthroughs, and Next.js SEO guides.",
-    images: ["https://optify360.com/og-blog.jpg"],
+    images: ["https://optify360.vercel.app/og-blog.jpg"],
   },
 };
 
@@ -42,7 +42,7 @@ export default async function BlogIndexPage() {
             &larr; Back to Home
           </Link>
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mt-4 mb-3">
-            The BLACKHOLE Blog
+            The optify360 Blog
           </h1>
           <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl">
             Technical writing on SEO growth, high-performance web development, Rust edge computing, and AI architectures compiled by the optify360 team.

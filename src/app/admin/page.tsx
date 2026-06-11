@@ -186,7 +186,7 @@ export default function AdminPage() {
           </div>
 
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-extrabold text-brand-text tracking-tight mb-2">BLACKHOLE</h1>
+            <h1 className="text-3xl font-extrabold text-brand-text tracking-tight mb-2">optify360</h1>
             <p className="text-sm text-brand-muted">
               {isRegistering ? "Register administrative access credentials" : "Authenticate to access client telemetry"}
             </p>
@@ -215,7 +215,7 @@ export default function AdminPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@blackhole.com"
+                  placeholder="admin@optify360.com"
                   className="w-full bg-brand-black/80 border border-brand-text/10 rounded-lg pl-10 pr-4 py-3 text-sm text-brand-text focus:outline-none focus:border-brand-orange transition-colors"
                 />
                 <Mail className="absolute left-3.5 top-3.5 w-4 h-4 text-brand-muted" />
@@ -274,7 +274,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-3">
             <Link href="/" className="text-xl font-bold tracking-tighter flex items-center gap-1.5 hover:text-brand-orange transition-colors">
               <span className="w-2.5 h-2.5 rounded-full bg-brand-orange" />
-              <span>BLACKHOLE</span>
+              <span>optify360</span>
             </Link>
             <ChevronRight className="w-4 h-4 text-brand-muted" />
             <span className="text-xs font-mono bg-brand-surface border border-brand-text/10 text-brand-orange px-2 py-0.5 rounded">

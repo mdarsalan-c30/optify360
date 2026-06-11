@@ -9,7 +9,7 @@ tags: [Next.js, SEO, Web Development, Schema]
 
 Search Engine Optimization (SEO) has changed significantly over the past few years. With search engines shifting heavily towards AI-driven summaries and semantic understanding, how we structure our web applications matters more than ever. 
 
-In this guide, we will explore the core technical strategies we use at **optify360** and **BLACKHOLE** to build lightning-fast, highly discoverable web applications with 100% SEO audits.
+In this guide, we will explore the core technical strategies we use at **optify360** to build lightning-fast, highly discoverable web applications with 100% SEO audits.
 
 ## Understanding Next.js Metadata API
 
@@ -23,12 +23,12 @@ For static routes, we can export a static `Metadata` object. Here is how we conf
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'SEO Agency and Engineering | BLACKHOLE',
-  description: 'Scale your product reach with optify360 and BLACKHOLE.',
+  title: 'SEO Agency and Engineering | optify360',
+  description: 'Scale your product reach with optify360.',
   openGraph: {
-    title: 'BLACKHOLE Agency',
+    title: 'optify360 Agency',
     description: 'Engineering excellence meets hyper-optimized SEO.',
-    url: 'https://optify360.com',
+    url: 'https://optify360.vercel.app',
     type: 'website',
   }
 };
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   if (!post) return { title: 'Not Found' };
   
   return {
-    title: `${post.title} | BLACKHOLE Blog`,
+    title: `${post.title} | optify360 Blog`,
     description: post.description,
   };
 }
@@ -84,4 +84,4 @@ A search crawler needs an index map to explore your site. Next.js makes sitemap 
 
 ## Conclusion
 
-Mastering SEO in 2026 is no longer about keyword stuffing. It is about speed, semantic structure, structured JSON-LD schemas, and accessible typography. By integrating these systems directly into Next.js, BLACKHOLE guarantees search engine readiness from day one.
+Mastering SEO in 2026 is no longer about keyword stuffing. It is about speed, semantic structure, structured JSON-LD schemas, and accessible typography. By integrating these systems directly into Next.js, optify360 guarantees search engine readiness from day one.

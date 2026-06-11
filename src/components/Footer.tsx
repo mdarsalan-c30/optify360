@@ -16,10 +16,10 @@ export default function Footer() {
             <div className="w-5 h-5 rounded-full bg-brand-orange orange-glow-sm flex items-center justify-center">
               <div className="w-2.5 h-2.5 rounded-full bg-brand-black" />
             </div>
-            BLACK<span className="text-brand-orange">HOLE</span>
+            optify<span className="text-brand-orange">360</span>
           </a>
           <p className="text-brand-muted text-sm leading-relaxed max-w-sm">
-            Engineering next-generation digital architectures, responsive Bento grids, and high-velocity web platforms for innovative industries.
+            Engineering next-generation digital systems, responsive Bento grids, and high-velocity web platforms for innovative industries.
           </p>
         </div>
 
@@ -48,7 +48,7 @@ export default function Footer() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto border-t border-brand-text/5 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono text-brand-muted">
-        <p>&copy; {new Date().getFullYear()} BLACKHOLE Agency. All systems operational.</p>
+        <p>&copy; {new Date().getFullYear()} optify360. Engineered by <a href="https://mdarsalan.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-brand-orange transition-colors">Md Arsalan</a>. All systems operational.</p>
         <div className="flex gap-6">
           <a href="#" className="hover:text-brand-orange transition-colors">Status</a>
           <a href="#" className="hover:text-brand-orange transition-colors">Telemetry logs</a>

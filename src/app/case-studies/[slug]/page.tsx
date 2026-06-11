@@ -25,16 +25,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `${study.title} | BLACKHOLE Case Study`,
+    title: `${study.title} | optify360 Case Study`,
     description: study.summary,
     openGraph: {
-      title: `${study.title} | BLACKHOLE Case Study`,
+      title: `${study.title} | optify360 Case Study`,
       description: study.summary,
-      url: `https://optify360.com/case-studies/${study.slug}`,
+      url: `https://optify360.vercel.app/case-studies/${study.slug}`,
       type: "article",
       images: [
         {
-          url: `https://optify360.com/og-${study.slug}.jpg`,
+          url: `https://optify360.vercel.app/og-${study.slug}.jpg`,
           width: 1200,
           height: 630,
           alt: study.title,
@@ -43,9 +43,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title: `${study.title} | BLACKHOLE Case Study`,
+      title: `${study.title} | optify360 Case Study`,
       description: study.summary,
-      images: [`https://optify360.com/og-${study.slug}.jpg`],
+      images: [`https://optify360.vercel.app/og-${study.slug}.jpg`],
     },
   };
 }
@@ -64,7 +64,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
       <CaseStudySchema
         title={study.title}
         description={study.summary}
-        url={`https://optify360.com/case-studies/${study.slug}`}
+        url={`https://optify360.vercel.app/case-studies/${study.slug}`}
         clientName={study.clientName}
         industry={study.industry}
         datePublished={study.datePublished}

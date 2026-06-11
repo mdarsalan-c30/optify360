@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Compass, Layers, Cpu, Rocket } from "lucide-react";
 
@@ -20,7 +20,7 @@ const steps: Step[] = [
     subtitle: "Telemetry & Technical Audit",
     description: "We audit your existing digital infrastructure, perform query analysis, and map technical requirements to define bottlenecks and architectural goals.",
     bullets: ["Telemetry collection", "Database scaling assessment", "System architecture design blueprint"],
-    icon: <Compass className="w-6 h-6 text-brand-orange" />
+    icon: <Compass className="w-5 h-5 text-brand-orange" />
   },
   {
     num: "02",
@@ -28,7 +28,7 @@ const steps: Step[] = [
     subtitle: "High-Fidelity Interface System",
     description: "We design layout logic using premium dark-theme structures. We craft Bento Grids, responsive flows, and custom micro-interactions.",
     bullets: ["Bento Layout systems", "Aesthetic absolute dark themes", "Component micro-interaction layouts"],
-    icon: <Layers className="w-6 h-6 text-brand-orange" />
+    icon: <Layers className="w-5 h-5 text-brand-orange" />
   },
   {
     num: "03",
@@ -36,7 +36,7 @@ const steps: Step[] = [
     subtitle: "Hyper-tuned Engine Assembly",
     description: "Our engineers build the platform using clean Next.js architecture, Tailwind styling, and customized Framer Motion physics. No heavy structures.",
     bullets: ["Headless Next.js and API integrations", "Tailwind CSS v4 layouts", "Frame-rate optimized smooth motions"],
-    icon: <Cpu className="w-6 h-6 text-brand-orange" />
+    icon: <Cpu className="w-5 h-5 text-brand-orange" />
   },
   {
     num: "04",
@@ -44,12 +44,21 @@ const steps: Step[] = [
     subtitle: "Digital System Release",
     description: "We execute clean database migrations, deploy the headless code to edge nodes, and configure analytical dashboards for live optimization.",
     bullets: ["Edge CDN deployments", "SEO structural indexation setup", "Telemetry scaling dashboard activation"],
-    icon: <Rocket className="w-6 h-6 text-brand-orange" />
+    icon: <Rocket className="w-5 h-5 text-brand-orange" />
   }
 ];
 
 export default function Process() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    setIsDesktop(media.matches);
+    const listener = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, []);
   
   // Track scroll progress of the entire process section
   const { scrollYProgress } = useScroll({
@@ -81,8 +90,93 @@ export default function Process() {
   // Map progress to left index bullet tracker
   const indicatorHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
+  if (!isDesktop) {
+    return (
+      <div id="process" className="relative bg-brand-black py-24 px-6 md:px-12 w-full overflow-hidden border-t border-white/[0.04]">
+        {/* Ambient atmospheric glows */}
+        <div className="absolute inset-0 radial-dark pointer-events-none" />
+        
+        <div className="max-w-5xl mx-auto relative z-10 select-none">
+          {/* Header */}
+          <div className="text-left mb-20">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/5 bg-white/[0.02] backdrop-blur-md text-[10px] font-mono text-brand-orange mb-6 uppercase tracking-widest">
+              Execution Protocol
+            </div>
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-brand-text mb-6 font-heading tracking-tighter leading-none">
+              Our Development Stages
+            </h2>
+            <p className="text-brand-muted text-xs sm:text-sm leading-relaxed max-w-xl font-sans">
+              From audit parameters to live edge CDN deployment, we execute structured digital development systems.
+            </p>
+          </div>
+
+          {/* Timeline steps list */}
+          <div className="relative pl-8 sm:pl-12 border-l border-white/[0.06] flex flex-col gap-16">
+            {steps.map((step, idx) => (
+              <div key={idx} className="relative group">
+                
+                {/* Glowing Node Marker */}
+                <div className="absolute -left-[41px] sm:-left-[57px] top-1 w-[18px] h-[18px] sm:w-[24px] sm:h-[24px] rounded-full bg-brand-black border border-brand-orange/40 flex items-center justify-center shadow-[0_0_12px_rgba(255,107,0,0.15)] group-hover:border-brand-orange transition-colors">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-brand-orange" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                  
+                  {/* Big outlined step index number */}
+                  <div className="md:col-span-3">
+                    <span 
+                      className="text-6xl sm:text-7xl font-extrabold font-heading leading-none text-white/[0.02] border-text select-none tracking-tighter block"
+                      style={{
+                        WebkitTextStroke: "1px rgba(255,107,0,0.12)",
+                      }}
+                    >
+                      {step.num}
+                    </span>
+                  </div>
+
+                  {/* Step details content */}
+                  <div className="md:col-span-9 flex flex-col items-start text-left">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2.5 rounded-2xl bg-white/[0.02] border border-white/[0.05] text-brand-orange shadow-lg">
+                        {step.icon}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] font-mono text-brand-orange tracking-widest uppercase">STAGE {step.num}</span>
+                        <span className="text-[11px] font-semibold text-brand-muted tracking-wide font-sans">{step.subtitle}</span>
+                      </div>
+                    </div>
+
+                    <h3 className="text-xl sm:text-2xl font-bold text-brand-text mb-4 tracking-tight leading-none font-heading group-hover:text-brand-orange transition-colors">
+                      {step.title}
+                    </h3>
+
+                    <p className="text-brand-muted text-xs sm:text-sm leading-relaxed mb-6 max-w-xl font-sans">
+                      {step.description}
+                    </p>
+
+                    {/* Bullet checklist */}
+                    <ul className="flex flex-col gap-2.5">
+                      {step.bullets.map((b, bIdx) => (
+                        <li key={bIdx} className="flex items-center gap-2.5 text-xs font-semibold text-brand-text font-sans">
+                          <span className="w-1 h-1 rounded-full bg-brand-orange orange-glow-sm" />
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div id="process" ref={containerRef} className="relative h-[400vh] bg-brand-black">
+    <div id="process" ref={containerRef} className="relative h-[400vh] bg-brand-black w-full overflow-hidden border-t border-white/[0.04]">
       {/* Sticky full screen viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
         

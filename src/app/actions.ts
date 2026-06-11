@@ -49,7 +49,7 @@ export async function submitContactForm(data: ContactInput) {
       subject: `New Contact Submission from ${data.name}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 8px; background-color: #0A0A0A; color: #F5F5F5;">
-          <h2 style="color: #FF6B00; border-bottom: 2px solid #FF6B00; padding-bottom: 10px;">BLACKHOLE - New Contact Submission</h2>
+          <h2 style="color: #FF6B00; border-bottom: 2px solid #FF6B00; padding-bottom: 10px;">optify360 - New Contact Submission</h2>
           <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
             <tr>
               <td style="padding: 8px 0; font-weight: bold; width: 150px; color: #A0A0A0;">Name:</td>
@@ -77,7 +77,7 @@ export async function submitContactForm(data: ContactInput) {
             </tr>
           </table>
           <div style="margin-top: 30px; border-top: 1px solid #222; padding-top: 15px; text-align: center; font-size: 12px; color: #A0A0A0;">
-            Received at ${new Date().toLocaleString()} | BLACKHOLE Integration System
+            Received at ${new Date().toLocaleString()} | optify360 Integration System
           </div>
         </div>
       `,
@@ -116,7 +116,7 @@ export async function submitBudgetCalculator(data: LeadInput) {
       subject: `New Project Lead: ${data.projectType} ($${data.budget})`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 8px; background-color: #0A0A0A; color: #F5F5F5;">
-          <h2 style="color: #FF6B00; border-bottom: 2px solid #FF6B00; padding-bottom: 10px;">BLACKHOLE - New Lead Request</h2>
+          <h2 style="color: #FF6B00; border-bottom: 2px solid #FF6B00; padding-bottom: 10px;">optify360 - New Lead Request</h2>
           <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
             <tr>
               <td style="padding: 8px 0; font-weight: bold; width: 150px; color: #A0A0A0;">Lead Name:</td>
@@ -152,7 +152,7 @@ export async function submitBudgetCalculator(data: LeadInput) {
             </tr>
           </table>
           <div style="margin-top: 30px; border-top: 1px solid #222; padding-top: 15px; text-align: center; font-size: 12px; color: #A0A0A0;">
-            Received at ${new Date().toLocaleString()} | BLACKHOLE Integration System
+            Received at ${new Date().toLocaleString()} | optify360 Integration System
           </div>
         </div>
       `,

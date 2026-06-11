@@ -75,14 +75,14 @@ export default function BudgetCalculator() {
   };
 
   return (
-    <section id="calculator" className="relative py-32 px-6 md:px-12 lg:px-24 bg-brand-black w-full overflow-hidden">
+    <section id="calculator" className="relative py-32 px-6 md:px-12 lg:px-24 bg-brand-black w-full overflow-hidden border-t border-white/[0.04]">
       {/* Background space glow */}
       <div className="absolute top-1/3 right-0 w-[450px] h-[450px] bg-brand-orange/[0.02] blur-[150px] rounded-full pointer-events-none" />
       
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-5xl mx-auto relative z-10 select-none">
         
         {/* Header */}
-        <div className="text-center mb-20">
+        <div className="text-left mb-20 max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -107,7 +107,7 @@ export default function BudgetCalculator() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-brand-muted max-w-xl mx-auto font-sans"
+            className="text-brand-muted text-xs sm:text-sm leading-relaxed max-w-2xl font-sans"
           >
             Configure your technical scope requirements to calculate the approximate budget ranges for your digital growth systems.
           </motion.p>
@@ -115,12 +115,12 @@ export default function BudgetCalculator() {
 
         {/* Dashboard Grid Cockpit */}
         <div className="bg-white/[0.01] border border-white/[0.05] rounded-3xl p-6 md:p-12 backdrop-blur-3xl shadow-[0_30px_100px_rgba(0,0,0,0.5)]">
-          <form onSubmit={handleSubmit} className="space-y-10">
+          <form onSubmit={handleSubmit} className="space-y-12">
             
             {/* Step 1: Project Type */}
             <div>
-              <label className="block text-xs font-mono text-brand-muted uppercase tracking-widest mb-4">
-                1. Select System Architecture
+              <label className="block text-[10px] font-mono text-brand-orange uppercase tracking-widest mb-5">
+                01. Select System Architecture
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {PROJECT_TYPES.map((type) => (
@@ -130,11 +130,11 @@ export default function BudgetCalculator() {
                     onClick={() => setProjectType(type.id)}
                     className={`flex flex-col items-center justify-center p-6 rounded-2xl border text-center transition-all duration-300 cursor-pointer ${
                       projectType === type.id
-                        ? "border-brand-orange bg-brand-orange/10 text-brand-text shadow-[0_0_20px_rgba(255,107,0,0.1)]"
-                        : "border-white/[0.05] bg-white/[0.01] text-brand-muted hover:border-white/[0.15]"
+                        ? "border-brand-orange/60 bg-brand-orange/[0.03] text-brand-text shadow-[0_0_25px_rgba(255,107,0,0.12)]"
+                        : "border-white/[0.04] bg-white/[0.005] text-brand-muted hover:border-white/[0.12] hover:bg-white/[0.015]"
                     }`}
                   >
-                    <span className="text-3xl mb-3">{type.icon}</span>
+                    <span className="text-2xl mb-3">{type.icon}</span>
                     <span className="text-xs font-bold font-sans tracking-wide">{type.label}</span>
                   </button>
                 ))}
@@ -143,8 +143,8 @@ export default function BudgetCalculator() {
 
             {/* Step 2: Timeline */}
             <div>
-              <label className="block text-xs font-mono text-brand-muted uppercase tracking-widest mb-4">
-                2. Target Launch Timeline
+              <label className="block text-[10px] font-mono text-brand-orange uppercase tracking-widest mb-5">
+                02. Target Launch Timeline
               </label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {TIMELINES.map((time) => (
@@ -154,8 +154,8 @@ export default function BudgetCalculator() {
                     onClick={() => setTimeline(time.id)}
                     className={`p-4 rounded-xl border text-center text-xs font-bold transition-all duration-300 cursor-pointer ${
                       timeline === time.id
-                        ? "border-brand-orange bg-brand-orange/10 text-brand-text shadow-[0_0_20px_rgba(255,107,0,0.1)]"
-                        : "border-white/[0.05] bg-white/[0.01] text-brand-muted hover:border-white/[0.15]"
+                        ? "border-brand-orange/60 bg-brand-orange/[0.03] text-brand-text shadow-[0_0_25px_rgba(255,107,0,0.12)]"
+                        : "border-white/[0.04] bg-white/[0.005] text-brand-muted hover:border-white/[0.12] hover:bg-white/[0.015]"
                     }`}
                   >
                     {time.label}
@@ -166,8 +166,8 @@ export default function BudgetCalculator() {
 
             {/* Step 3: Budget Range */}
             <div>
-              <label className="block text-xs font-mono text-brand-muted uppercase tracking-widest mb-4">
-                3. Target Budget Scope
+              <label className="block text-[10px] font-mono text-brand-orange uppercase tracking-widest mb-5">
+                03. Target Budget Scope
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {BUDGETS.map((bg) => (
@@ -177,8 +177,8 @@ export default function BudgetCalculator() {
                     onClick={() => setBudget(bg.id)}
                     className={`p-4 rounded-xl border text-center text-xs font-bold transition-all duration-300 cursor-pointer ${
                       budget === bg.id
-                        ? "border-brand-orange bg-brand-orange/10 text-brand-text shadow-[0_0_20px_rgba(255,107,0,0.1)]"
-                        : "border-white/[0.05] bg-white/[0.01] text-brand-muted hover:border-white/[0.15]"
+                        ? "border-brand-orange/60 bg-brand-orange/[0.03] text-brand-text shadow-[0_0_25px_rgba(255,107,0,0.12)]"
+                        : "border-white/[0.04] bg-white/[0.005] text-brand-muted hover:border-white/[0.12] hover:bg-white/[0.015]"
                     }`}
                   >
                     {bg.label}
@@ -189,12 +189,12 @@ export default function BudgetCalculator() {
 
             {/* Step 4: User Info */}
             <div>
-              <label className="block text-xs font-mono text-brand-muted uppercase tracking-widest mb-4">
-                4. Dispatch Information
+              <label className="block text-[10px] font-mono text-brand-orange uppercase tracking-widest mb-5">
+                04. Dispatch Information
               </label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <label htmlFor="calc-name" className="block text-[10px] font-mono text-brand-muted uppercase mb-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="flex flex-col">
+                  <label htmlFor="calc-name" className="text-[10px] font-mono text-brand-muted uppercase mb-1">
                     Name *
                   </label>
                   <input
@@ -203,12 +203,12 @@ export default function BudgetCalculator() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="John Doe"
-                    className="w-full bg-brand-black/40 border border-white/[0.05] rounded-xl px-4 py-3 text-sm text-brand-text focus:outline-none focus:border-brand-orange focus:bg-brand-black/60 transition-colors"
+                    placeholder="Enter name"
+                    className="w-full bg-transparent border-b border-white/10 py-3.5 text-base text-brand-text focus:outline-none focus:border-brand-orange transition-colors rounded-none placeholder:text-white/20 font-sans"
                   />
                 </div>
-                <div>
-                  <label htmlFor="calc-email" className="block text-[10px] font-mono text-brand-muted uppercase mb-2">
+                <div className="flex flex-col">
+                  <label htmlFor="calc-email" className="text-[10px] font-mono text-brand-muted uppercase mb-1">
                     Email Address *
                   </label>
                   <input
@@ -217,12 +217,12 @@ export default function BudgetCalculator() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="john@domain.com"
-                    className="w-full bg-brand-black/40 border border-white/[0.05] rounded-xl px-4 py-3 text-sm text-brand-text focus:outline-none focus:border-brand-orange focus:bg-brand-black/60 transition-colors"
+                    placeholder="Enter email"
+                    className="w-full bg-transparent border-b border-white/10 py-3.5 text-base text-brand-text focus:outline-none focus:border-brand-orange transition-colors rounded-none placeholder:text-white/20 font-sans"
                   />
                 </div>
-                <div>
-                  <label htmlFor="calc-company" className="block text-[10px] font-mono text-brand-muted uppercase mb-2">
+                <div className="flex flex-col">
+                  <label htmlFor="calc-company" className="text-[10px] font-mono text-brand-muted uppercase mb-1">
                     Company Name
                   </label>
                   <input
@@ -230,8 +230,8 @@ export default function BudgetCalculator() {
                     type="text"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
-                    placeholder="Optional"
-                    className="w-full bg-brand-black/40 border border-white/[0.05] rounded-xl px-4 py-3 text-sm text-brand-text focus:outline-none focus:border-brand-orange focus:bg-brand-black/60 transition-colors"
+                    placeholder="Enter company (optional)"
+                    className="w-full bg-transparent border-b border-white/10 py-3.5 text-base text-brand-text focus:outline-none focus:border-brand-orange transition-colors rounded-none placeholder:text-white/20 font-sans"
                   />
                 </div>
               </div>
@@ -239,21 +239,21 @@ export default function BudgetCalculator() {
 
             {/* Step 5: Details */}
             <div>
-              <label htmlFor="calc-details" className="block text-[10px] font-mono text-brand-muted uppercase mb-2">
-                Project Scope Details
+              <label htmlFor="calc-details" className="block text-[10px] font-mono text-brand-orange uppercase tracking-widest mb-2">
+                05. Project Scope Details
               </label>
               <textarea
                 id="calc-details"
                 rows={4}
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
-                placeholder="Briefly explain what you want to build (key integrations, APIs, schemas, pages)..."
-                className="w-full bg-brand-black/40 border border-white/[0.05] rounded-xl px-4 py-3 text-sm text-brand-text focus:outline-none focus:border-brand-orange focus:bg-brand-black/60 transition-colors resize-none"
+                placeholder="Describe key pages, APIs, integrations, and technical requirements..."
+                className="w-full bg-transparent border-b border-white/10 py-3.5 text-base text-brand-text focus:outline-none focus:border-brand-orange transition-colors rounded-none placeholder:text-white/20 resize-none font-sans"
               />
             </div>
 
             {/* Submit Actions */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-6 border-t border-white/[0.05]">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-8 border-t border-white/[0.05]">
               <div>
                 <AnimatePresence mode="wait">
                   {status && (

@@ -11,7 +11,7 @@ interface FAQItem {
 
 const faqData: FAQItem[] = [
   {
-    question: "What core tech stack does BLACKHOLE engineer on?",
+    question: "What core tech stack does optify360 engineer on?",
     answer: "We engineer high-performance platforms using Next.js 16, React 19, Tailwind CSS v4, and Framer Motion. For backend services, we integrate Go, Rust, Python API routers, Redis caching networks, and headless CMS frameworks to maintain speed and telemetry control."
   },
   {

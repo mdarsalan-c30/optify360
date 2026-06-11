@@ -19,35 +19,35 @@ const monoFont = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "BLACKHOLE | High-Performance Web Engineering & SEO",
-    template: "%s | BLACKHOLE",
+    default: "optify360 | High-Performance Web Engineering & SEO",
+    template: "%s | optify360",
   },
-  description: "BLACKHOLE is an elite product development and SEO agency led by Md Arsalan, delivering lightning-fast web applications, optimized conversions, and search engine dominance under optify360.",
-  metadataBase: new URL("https://optify360.com"),
+  description: "optify360 is an elite digital systems and SEO agency led by Md Arsalan, delivering lightning-fast web applications, optimized conversions, and search engine dominance.",
+  metadataBase: new URL("https://optify360.vercel.app"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "BLACKHOLE | High-Performance Web Engineering & SEO",
-    description: "Elite product development and SEO agency led by Md Arsalan, delivering lightning-fast web applications and search engine dominance.",
-    url: "https://optify360.com",
-    siteName: "BLACKHOLE",
+    title: "optify360 | High-Performance Web Engineering & SEO",
+    description: "Elite digital systems and SEO agency led by Md Arsalan, delivering lightning-fast web applications and search engine dominance.",
+    url: "https://optify360.vercel.app",
+    siteName: "optify360",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "https://optify360.com/og-image.jpg",
+        url: "https://optify360.vercel.app/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "BLACKHOLE Agency",
+        alt: "optify360 Agency",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BLACKHOLE | High-Performance Web Engineering & SEO",
-    description: "Elite product development and SEO agency led by Md Arsalan, delivering lightning-fast web applications and search engine dominance.",
-    images: ["https://optify360.com/og-image.jpg"],
+    title: "optify360 | High-Performance Web Engineering & SEO",
+    description: "Elite digital systems and SEO agency led by Md Arsalan, delivering lightning-fast web applications and search engine dominance.",
+    images: ["https://optify360.vercel.app/og-image.jpg"],
     creator: "@mdarsalan",
   },
   robots: {
