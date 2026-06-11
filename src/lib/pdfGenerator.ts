@@ -11,6 +11,9 @@ export interface AgencySettings {
   agencyEmail?: string;
   agencyPhone?: string;
   agencyAddress?: string;
+  defaultInvoiceNotes?: string;
+  defaultInvoiceTerms?: string;
+  defaultContractTerms?: string;
 }
 
 export interface InvoiceItem {
@@ -50,11 +53,12 @@ export interface ContractData {
   signedByClient?: boolean;
   clientSignatureName?: string;
   signedAt?: string;
+  customTerms?: string;
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
-const SYM: Record<string, string> = { INR: '₹', USD: '$' };
+const SYM: Record<string, string> = { INR: 'Rs. ', USD: '$' };
 const O: [number, number, number] = [255, 107, 0];  // brand orange
 const DARK: [number, number, number] = [12, 12, 12];
 
@@ -420,20 +424,26 @@ export async function generateContractPDF(
   section('3', 'PROJECT TIMELINE',
     `Start Date: ${contract.startDate}  |  Estimated Completion: ${contract.endDate}  |  Duration: ${contract.duration}`);
 
-  section('4', 'INTELLECTUAL PROPERTY',
-    'Upon receipt of full payment, all deliverables specifically created for this project become the exclusive property of the Client. The Agency retains the right to showcase the work in its portfolio unless the Client requests otherwise in writing.');
+  if (contract.customTerms && contract.customTerms.trim() !== "") {
+    section('4', 'TERMS & CONDITIONS', contract.customTerms);
+  } else if (agency.defaultContractTerms && agency.defaultContractTerms.trim() !== "") {
+    section('4', 'TERMS & CONDITIONS', agency.defaultContractTerms);
+  } else {
+    section('4', 'INTELLECTUAL PROPERTY',
+      'Upon receipt of full payment, all deliverables specifically created for this project become the exclusive property of the Client. The Agency retains the right to showcase the work in its portfolio unless the Client requests otherwise in writing.');
 
-  section('5', 'CONFIDENTIALITY',
-    'Both parties agree to keep confidential any proprietary business information, trade secrets, and strategies shared during this engagement. This obligation persists after the termination of this agreement.');
+    section('5', 'CONFIDENTIALITY',
+      'Both parties agree to keep confidential any proprietary business information, trade secrets, and strategies shared during this engagement. This obligation persists after the termination of this agreement.');
 
-  section('6', 'REVISIONS & CHANGE ORDERS',
-    `This project includes ${contract.revisions} rounds of revisions. Additional revisions are billed at ₹2,500/hour or $30/hour (USD). Any scope changes require written approval from both parties before work begins.`);
+    section('6', 'REVISIONS & CHANGE ORDERS',
+      `This project includes ${contract.revisions} rounds of revisions. Additional revisions are billed at Rs. 2,500/hour or $30/hour (USD). Any scope changes require written approval from both parties before work begins.`);
 
-  section('7', 'TERMINATION',
-    'Either party may terminate this agreement with 14 days written notice. Work completed to the termination date will be invoiced at the pro-rata rate. Advance payments for undelivered work will be refunded within 7 business days.');
+    section('7', 'TERMINATION',
+      'Either party may terminate this agreement with 14 days written notice. Work completed to the termination date will be invoiced at the pro-rata rate. Advance payments for undelivered work will be refunded within 7 business days.');
 
-  section('8', 'LIMITATION OF LIABILITY',
-    "The Agency's total liability under this agreement shall not exceed the fees paid by the Client. The Agency shall not be liable for indirect, incidental, or consequential damages arising from this engagement.");
+    section('8', 'LIMITATION OF LIABILITY',
+      "The Agency's total liability under this agreement shall not exceed the fees paid by the Client. The Agency shall not be liable for indirect, incidental, or consequential damages arising from this engagement.");
+  }
 
   section('9', 'GOVERNING LAW & DISPUTE RESOLUTION',
     'This agreement is governed by the laws of India. Any disputes will first be resolved through good-faith negotiation. If unresolved within 30 days, disputes shall be settled through binding arbitration in New Delhi, India.');

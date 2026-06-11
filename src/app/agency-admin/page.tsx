@@ -85,6 +85,7 @@ interface Contract {
   signedByClient: boolean;
   clientSignatureName?: string;
   signedAt?: string;
+  customTerms?: string;
   createdAt?: any;
 }
 
@@ -159,6 +160,9 @@ export default function AgencyAdminPage() {
     agencyAddress: "Suite 100, Tech District, New Delhi, DL 110001, India",
     logoUrl: "",
     signatureUrl: "",
+    defaultInvoiceNotes: "",
+    defaultInvoiceTerms: "Payment due within 14 days of invoice date.",
+    defaultContractTerms: "",
   });
 
   // Settings form
@@ -195,7 +199,7 @@ export default function AgencyAdminPage() {
     totalAmount: 0, currency: "INR" as "INR" | "USD",
     paymentSchedule: "50% advance, 50% on delivery",
     duration: "1 month", startDate: TODAY, endDate: "",
-    revisions: 3, status: "Draft" as ContractStatus,
+    revisions: 3, status: "Draft" as ContractStatus, customTerms: "",
   });
   const [contractSaving, setContractSaving] = useState(false);
 
@@ -414,11 +418,11 @@ export default function AgencyAdminPage() {
     const client = clients.find(c => c.id === clientId);
     setInvoiceForm({
       clientId: clientId || "",
-      date: TODAY, dueDate: "",
+      date: TODAY, dueDate: TODAY,
       currency: "INR",
       items: [{ description: client ? `Services for ${client.projectName || "project"}` : "", quantity: 1, rate: 0 }],
-      taxPercent: 18, notes: "",
-      paymentTerms: "Payment due within 14 days of invoice date.",
+      taxPercent: 18, notes: agencySettings.defaultInvoiceNotes || "",
+      paymentTerms: agencySettings.defaultInvoiceTerms || "Payment due within 14 days of invoice date.",
       status: "Draft",
     });
     setShowInvoiceModal(true);
@@ -494,6 +498,7 @@ export default function AgencyAdminPage() {
       paymentSchedule: "50% advance, 50% on delivery",
       duration: "1 month", startDate: TODAY, endDate: "", revisions: 3,
       status: "Draft",
+      customTerms: agencySettings.defaultContractTerms || "",
     });
     setShowContractModal(true);
   };
@@ -505,6 +510,7 @@ export default function AgencyAdminPage() {
       totalAmount: c.totalAmount, currency: c.currency, paymentSchedule: c.paymentSchedule,
       duration: c.duration, startDate: c.startDate, endDate: c.endDate,
       revisions: c.revisions, status: c.status,
+      customTerms: c.customTerms || "",
     });
     setShowContractModal(true);
   };
@@ -928,6 +934,22 @@ export default function AgencyAdminPage() {
               </div>
             </div>
 
+            <div className="space-y-4">
+              <div>
+                <label className={lbl}>Default Invoice Notes</label>
+                <textarea value={settingsForm.defaultInvoiceNotes || ""} onChange={e => setSettingsForm(p => ({ ...p, defaultInvoiceNotes: e.target.value }))} rows={2} className={`${inp} resize-none`} placeholder="Bank details, UPI info, or thanks message..." />
+              </div>
+              <div>
+                <label className={lbl}>Default Invoice Payment Terms</label>
+                <input value={settingsForm.defaultInvoiceTerms || ""} onChange={e => setSettingsForm(p => ({ ...p, defaultInvoiceTerms: e.target.value }))} className={inp} placeholder="Payment due within 14 days of invoice date." />
+              </div>
+              <div>
+                <label className={lbl}>Default Contract Terms & Conditions</label>
+                <textarea value={settingsForm.defaultContractTerms || ""} onChange={e => setSettingsForm(p => ({ ...p, defaultContractTerms: e.target.value }))} rows={5} className={`${inp} resize-none`} placeholder="Leave blank to use the hardcoded default terms..." />
+                <p className="text-xs text-zinc-500 mt-1">If provided, this replaces the Intellectual Property, Confidentiality, Revisions, Termination, and Liability sections in the contract.</p>
+              </div>
+            </div>
+
             {/* Logo Upload */}
             <div className="bg-[#111111] border border-white/[0.07] rounded-xl p-5 space-y-3">
               <div>
@@ -1184,6 +1206,10 @@ export default function AgencyAdminPage() {
               <div>
                 <label className={lbl}>Project Description / Scope of Work</label>
                 <textarea required value={contractForm.projectDescription} onChange={e => setContractForm(p => ({ ...p, projectDescription: e.target.value }))} rows={4} placeholder="Describe the full scope of work, deliverables, and requirements…" className={`${inp} resize-none`} />
+              </div>
+              <div>
+                <label className={lbl}>Custom Terms & Conditions (Optional)</label>
+                <textarea value={contractForm.customTerms || ""} onChange={e => setContractForm(p => ({ ...p, customTerms: e.target.value }))} rows={4} placeholder="Override standard legal terms for this specific contract…" className={`${inp} resize-none`} />
               </div>
               <div>
                 <label className={lbl}>Status</label>
