@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { db } from "@/lib/firebase";
+import { db, auth } from "@/lib/firebase";
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { 
   collection, 
   query, 
@@ -62,31 +63,36 @@ export default function AdminPage() {
     name: "", headline: "", description: "", pillars: "", iconName: "Code"
   });
 
-  // Authenticate session on mount
+  // Authenticate session on mount using Firebase Auth state
   useEffect(() => {
-    const sessionAuth = sessionStorage.getItem("optify_admin_authenticated");
-    if (sessionAuth === "true") {
-      setIsLoggedIn(true);
-      fetchData();
-    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsLoggedIn(true);
+        fetchData();
+      } else {
+        setIsLoggedIn(false);
+        clearData();
+      }
+    });
+    return () => unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email === "admin@optify360.com" && password === "Optify360AdminSecurePass!2026") {
-      sessionStorage.setItem("optify_admin_authenticated", "true");
-      setIsLoggedIn(true);
-      setLoginError("");
-      fetchData();
-    } else {
+    setLoginError("");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // onAuthStateChanged will handle setting isLoggedIn and fetching data
+    } catch (err: any) {
+      console.error("Firebase login error:", err);
       setLoginError("Invalid admin email or password.");
     }
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("optify_admin_authenticated");
-    setIsLoggedIn(false);
-    clearData();
+  const handleLogout = async () => {
+    await signOut(auth);
+    // onAuthStateChanged will handle clearing state
   };
 
   const clearData = () => {
