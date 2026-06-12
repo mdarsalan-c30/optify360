@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { db, auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { 
@@ -21,6 +22,11 @@ import {
   Plus, Edit, Trash2, X, CheckCircle, DatabaseZap, Trash, ShieldCheck,
   LayoutGrid, Cpu, Code, Sparkles, Terminal, BarChart2, Zap
 } from "lucide-react";
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+import 'react-quill/dist/quill.snow.css';
+
+const TODAY = new Date().toISOString().split('T')[0];
 
 export default function AdminPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -51,7 +57,8 @@ export default function AdminPage() {
 
   // Forms inputs
   const [blogForm, setBlogForm] = useState({
-    title: "", slug: "", category: "", excerpt: "", content: "", coverImage: "", author: "Md Arsalan"
+    title: "", slug: "", category: "", excerpt: "", content: "", coverImage: "", author: "Md Arsalan",
+    publishDate: TODAY, faqs: [] as {question: string, answer: string}[]
   });
   const [projectForm, setProjectForm] = useState({
     client: "", category: "", title: "", challenge: "", solution: "", techStack: "", outcome: "", metric: "", gradient: ""
@@ -160,7 +167,7 @@ export default function AdminPage() {
   const closeEditor = () => {
     setEditorType(null);
     setEditId(null);
-    setBlogForm({ title: "", slug: "", category: "", excerpt: "", content: "", coverImage: "", author: "Md Arsalan" });
+    setBlogForm({ title: "", slug: "", category: "", excerpt: "", content: "", coverImage: "", author: "Md Arsalan", publishDate: TODAY, faqs: [] });
     setProjectForm({ client: "", category: "", title: "", challenge: "", solution: "", techStack: "", outcome: "", metric: "", gradient: "" });
     setTestimonialForm({ author: "", role: "", company: "", quote: "", avatarGradient: "" });
     setServiceForm({ name: "", headline: "", description: "", pillars: "", iconName: "Code" });
@@ -623,7 +630,9 @@ Keep API brokers decoupled from the client. NextJS 15 Server Components allow ex
         excerpt: item.excerpt || "",
         content: item.content || "",
         coverImage: item.coverImage || "",
-        author: item.author || "Md Arsalan"
+        author: item.author || "Md Arsalan",
+        publishDate: item.publishDate || TODAY,
+        faqs: item.faqs || []
       });
     } else if (type === "project") {
       setProjectForm({
@@ -1257,7 +1266,7 @@ Keep API brokers decoupled from the client. NextJS 15 Server Components allow ex
         {/* EDITOR FORM MODAL PANEL */}
         {editorType && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-            <div className="bg-[#111111] border border-white/[0.1] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            <div className={`bg-[#111111] border border-white/[0.1] rounded-2xl w-full ${editorType === 'blog' ? 'max-w-5xl' : 'max-w-2xl'} max-h-[90vh] overflow-y-auto shadow-2xl relative`}>
               
               <div className="flex justify-between items-center p-6 border-b border-white/[0.08]">
                 <h3 className="text-lg font-bold font-heading text-text-main">
@@ -1311,6 +1320,15 @@ Keep API brokers decoupled from the client. NextJS 15 Server Components allow ex
                         placeholder="e.g. Md Arsalan"
                       />
                     </div>
+                    <div>
+                      <label className="block text-xs uppercase tracking-wider text-text-muted mb-1 font-mono">Publish Date (Schedule)</label>
+                      <input 
+                        type="date" required value={blogForm.publishDate}
+                        onChange={(e) => setBlogForm({...blogForm, publishDate: e.target.value})}
+                        className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#FF6B00]/40 text-text-main"
+                      />
+                      <p className="text-[10px] text-zinc-500 mt-1">Set to a future date to schedule publication.</p>
+                    </div>
                   </div>
 
                   <div>
@@ -1363,14 +1381,55 @@ Keep API brokers decoupled from the client. NextJS 15 Server Components allow ex
                     />
                   </div>
 
+                  {/* Rich Text Editor */}
                   <div>
-                    <label className="block text-xs uppercase tracking-wider text-text-muted mb-1 font-mono">Article Content (Markdown Supported)</label>
-                    <textarea 
-                      required rows={8} value={blogForm.content}
-                      onChange={(e) => setBlogForm({...blogForm, content: e.target.value})}
-                      className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#FF6B00]/40 font-mono text-text-main"
-                      placeholder="Use standard Markdown syntax. E.g. ## Header, **bold**, etc."
-                    />
+                    <label className="block text-xs uppercase tracking-wider text-text-muted mb-1 font-mono">Article Content</label>
+                    <div className="bg-white rounded-xl text-black overflow-hidden border border-white/10">
+                      <ReactQuill 
+                        theme="snow" 
+                        value={blogForm.content} 
+                        onChange={content => setBlogForm(p => ({ ...p, content }))} 
+                        className="h-[300px] pb-10"
+                      />
+                    </div>
+                  </div>
+
+                  {/* FAQs Section */}
+                  <div className="bg-[#1a1a1a] border border-white/[0.05] p-6 rounded-2xl">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="text-sm font-bold font-mono uppercase tracking-wider text-text-main">Frequently Asked Questions (SEO)</h3>
+                        <p className="text-xs text-zinc-500">Adding FAQs will generate JSON-LD schema for Google's AI Overviews.</p>
+                      </div>
+                      <button type="button" onClick={() => setBlogForm(p => ({ ...p, faqs: [...p.faqs, { question: "", answer: "" }] }))} className="bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-zinc-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2">
+                        <Plus className="w-3 h-3" /> Add FAQ
+                      </button>
+                    </div>
+                    <div className="space-y-4">
+                      {blogForm.faqs.map((faq, i) => (
+                        <div key={i} className="flex gap-4 items-start bg-white/[0.02] p-4 rounded-xl border border-white/[0.02]">
+                          <div className="flex-1 space-y-3">
+                            <input required value={faq.question} onChange={e => {
+                              const newFaqs = [...blogForm.faqs];
+                              newFaqs[i].question = e.target.value;
+                              setBlogForm(p => ({ ...p, faqs: newFaqs }));
+                            }} placeholder="Question" className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#FF6B00]/40 text-text-main" />
+                            <textarea required value={faq.answer} onChange={e => {
+                              const newFaqs = [...blogForm.faqs];
+                              newFaqs[i].answer = e.target.value;
+                              setBlogForm(p => ({ ...p, faqs: newFaqs }));
+                            }} placeholder="Answer" rows={2} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#FF6B00]/40 resize-none text-text-main" />
+                          </div>
+                          <button type="button" onClick={() => {
+                            const newFaqs = blogForm.faqs.filter((_, idx) => idx !== i);
+                            setBlogForm(p => ({ ...p, faqs: newFaqs }));
+                          }} className="text-zinc-500 hover:text-rose-400 mt-2 p-2">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                      {blogForm.faqs.length === 0 && <div className="text-zinc-600 text-xs">No FAQs added yet.</div>}
+                    </div>
                   </div>
 
                   <div className="flex justify-end gap-3 pt-4 border-t border-white/[0.08]">
