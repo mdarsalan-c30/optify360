@@ -233,7 +233,8 @@ export default function AgencyAdminPage() {
   const [showLocationEditor, setShowLocationEditor] = useState(false);
   const [editLocationId, setEditLocationId] = useState<string | null>(null);
   const [locationForm, setLocationForm] = useState({
-    city: "", slug: "", metaTitle: "", metaDescription: "", localAddress: ""
+    city: "", slug: "", metaTitle: "", metaDescription: "", localAddress: "",
+    hasSpecificService: false, specificServiceName: "", serviceDisplayMode: "all_default" as "specific_only" | "all_default" | "both"
   });
   const [blogSaving, setBlogSaving] = useState(false);
 
@@ -660,13 +661,13 @@ export default function AgencyAdminPage() {
 
   const openAddLocation = () => {
     setEditLocationId(null);
-    setLocationForm({ city: "", slug: "", metaTitle: "", metaDescription: "", localAddress: "" });
+    setLocationForm({ city: "", slug: "", metaTitle: "", metaDescription: "", localAddress: "", hasSpecificService: false, specificServiceName: "", serviceDisplayMode: "all_default" });
     setShowLocationEditor(true);
   };
 
   const openEditLocation = (loc: any) => {
     setEditLocationId(loc.id);
-    setLocationForm({ city: loc.city, slug: loc.slug, metaTitle: loc.metaTitle, metaDescription: loc.metaDescription, localAddress: loc.localAddress || "" });
+    setLocationForm({ city: loc.city, slug: loc.slug, metaTitle: loc.metaTitle, metaDescription: loc.metaDescription, localAddress: loc.localAddress || "", hasSpecificService: loc.hasSpecificService || false, specificServiceName: loc.specificServiceName || "", serviceDisplayMode: loc.serviceDisplayMode || "all_default" });
     setShowLocationEditor(true);
   };
 
@@ -1601,6 +1602,39 @@ export default function AgencyAdminPage() {
                 <div>
                   <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">Local Address (Optional)</label>
                   <input value={locationForm.localAddress} onChange={e => setLocationForm(p => ({ ...p, localAddress: e.target.value }))} className={inp} placeholder="123 Street, Dubai" />
+                </div>
+                <div className="pt-4 border-t border-white/10">
+                  <label className="block text-sm font-bold text-white mb-3">Target a Specific Service for this City?</label>
+                  <div className="flex gap-4 mb-4">
+                    <label className="flex items-center gap-2 text-sm text-zinc-400 cursor-pointer">
+                      <input type="radio" name="hasSpecificService" checked={locationForm.hasSpecificService === true} onChange={() => setLocationForm(p => ({ ...p, hasSpecificService: true }))} className="accent-[#FF6B00]" />
+                      Yes
+                    </label>
+                    <label className="flex items-center gap-2 text-sm text-zinc-400 cursor-pointer">
+                      <input type="radio" name="hasSpecificService" checked={locationForm.hasSpecificService === false} onChange={() => setLocationForm(p => ({ ...p, hasSpecificService: false }))} className="accent-[#FF6B00]" />
+                      No
+                    </label>
+                  </div>
+
+                  {locationForm.hasSpecificService && (
+                    <div className="space-y-4 bg-zinc-900 p-4 rounded-xl border border-white/5">
+                      <div>
+                        <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">Specific Service Name</label>
+                        <input required={locationForm.hasSpecificService} value={locationForm.specificServiceName} onChange={e => setLocationForm(p => ({ ...p, specificServiceName: e.target.value }))} className={inp} placeholder="e.g. Real Estate App Development" />
+                      </div>
+                      <div>
+                        <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">Service Display Mode</label>
+                        <select required={locationForm.hasSpecificService} value={locationForm.serviceDisplayMode} onChange={e => setLocationForm(p => ({ ...p, serviceDisplayMode: e.target.value as any }))} className={`${inp} appearance-none`}>
+                          <option value="specific_only">Show ONLY this specific service</option>
+                          <option value="both">Show this service + all default services</option>
+                          <option value="all_default">Show all default services only</option>
+                        </select>
+                        <p className="text-xs text-zinc-500 mt-2">
+                          *This dictates how the Services section behaves on the city landing page.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </form>
             </div>

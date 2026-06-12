@@ -8,6 +8,9 @@ export interface LocationData {
   metaTitle: string;
   metaDescription: string;
   localAddress?: string;
+  hasSpecificService?: boolean;
+  specificServiceName?: string;
+  serviceDisplayMode?: "specific_only" | "all_default" | "both";
   createdAt?: any;
   updatedAt?: any;
 }
