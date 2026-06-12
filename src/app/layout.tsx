@@ -50,6 +50,11 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.png",
   },
+  verification: {
+    other: {
+      "msvalidate.01": ["71670B3E3740B9FC63A0243268DDD757"],
+    },
+  },
 };
 
 export default function RootLayout({
