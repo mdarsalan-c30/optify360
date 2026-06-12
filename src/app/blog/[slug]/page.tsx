@@ -48,10 +48,30 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound();
   }
 
+  // Generate FAQ JSON-LD if faqs exist
+  const faqSchema = post.faqs && post.faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": post.faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  } : null;
+
   return (
     <>
       <Navbar />
       <main className="flex-grow pt-32 pb-24">
+        {faqSchema && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          />
+        )}
         <article className="max-w-4xl mx-auto px-6">
           {/* Back button */}
           <Link 
@@ -92,6 +112,21 @@ export default async function BlogPostPage({ params }: PageProps) {
             className="prose prose-invert max-w-none prose-p:my-4 prose-p:leading-relaxed prose-headings:font-heading"
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
+
+          {/* FAQs Section */}
+          {post.faqs && post.faqs.length > 0 && (
+            <div className="mt-16 pt-12 border-t border-white/[0.05]">
+              <h2 className="text-3xl font-bold font-heading mb-8">Frequently Asked Questions</h2>
+              <div className="space-y-6">
+                {post.faqs.map((faq, index) => (
+                  <div key={index} className="bg-surface border border-white/[0.05] rounded-2xl p-6">
+                    <h3 className="text-xl font-bold font-heading mb-3">{faq.question}</h3>
+                    <p className="text-text-muted leading-relaxed">{faq.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Bottom Call to Action */}
           <div className="mt-20 p-8 border border-white/[0.08] bg-surface rounded-2xl flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden">

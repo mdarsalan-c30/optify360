@@ -19,8 +19,12 @@ import {
 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
+import dynamic from 'next/dynamic';
+import 'react-quill/dist/quill.snow.css';
 
-type Tab = "clients" | "invoices" | "contracts" | "settings";
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+
+type Tab = "clients" | "invoices" | "contracts" | "settings" | "blogs";
 type InvoiceStatus = "Draft" | "Sent" | "Paid";
 type ContractStatus = "Draft" | "Sent" | "Signed";
 type ProjectStatus =
@@ -89,6 +93,19 @@ interface Contract {
   createdAt?: any;
 }
 
+export interface AdminBlog {
+  id?: string;
+  title: string;
+  slug: string;
+  category: string;
+  author: string;
+  coverImage: string;
+  excerpt: string;
+  content: string;
+  publishDate: string;
+  faqs: { question: string; answer: string }[];
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 const STATUS_COLORS: Record<string, string> = {
@@ -153,6 +170,7 @@ export default function AgencyAdminPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
+  const [blogs, setBlogs] = useState<AdminBlog[]>([]);
   const [agencySettings, setAgencySettings] = useState<AgencySettings>({
     agencyName: "Optify360",
     agencyEmail: "optify360official@gmail.com",
@@ -202,6 +220,15 @@ export default function AgencyAdminPage() {
     revisions: 3, status: "Draft" as ContractStatus, customTerms: "",
   });
   const [contractSaving, setContractSaving] = useState(false);
+
+  // Blog editor
+  const [showBlogEditor, setShowBlogEditor] = useState(false);
+  const [editBlogId, setEditBlogId] = useState<string | null>(null);
+  const [blogForm, setBlogForm] = useState<AdminBlog>({
+    title: "", slug: "", category: "Engineering", author: "Md Arsalan",
+    coverImage: "", excerpt: "", content: "", publishDate: TODAY, faqs: []
+  });
+  const [blogSaving, setBlogSaving] = useState(false);
 
   // PDF generating state
   const [generatingPDF, setGeneratingPDF] = useState<string | null>(null);
@@ -270,7 +297,7 @@ export default function AgencyAdminPage() {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      await Promise.all([fetchClients(), fetchInvoices(), fetchContracts(), fetchSettings()]);
+      await Promise.all([fetchClients(), fetchInvoices(), fetchContracts(), fetchSettings(), fetchBlogs()]);
     } finally {
       setLoading(false);
     }
@@ -298,6 +325,11 @@ export default function AgencyAdminPage() {
       setAgencySettings(data);
       setSettingsForm(data);
     }
+  };
+
+  const fetchBlogs = async () => {
+    const snap = await getDocs(query(collection(db, "blogs"), orderBy("createdAt", "desc")));
+    setBlogs(snap.docs.map(d => ({ id: d.id, ...d.data() } as AdminBlog)));
   };
 
   const notify = (msg: string) => {
@@ -647,6 +679,7 @@ export default function AgencyAdminPage() {
     { id: "clients", label: "Clients", icon: <Users className="w-4 h-4" />, count: clients.length },
     { id: "invoices", label: "Invoices", icon: <FileText className="w-4 h-4" />, count: invoices.length },
     { id: "contracts", label: "Contracts", icon: <FilePen className="w-4 h-4" />, count: contracts.length },
+    { id: "blogs", label: "Blogs", icon: <Sparkles className="w-4 h-4" />, count: blogs.length },
     { id: "settings", label: "Settings", icon: <Settings2 className="w-4 h-4" /> },
   ];
 
@@ -900,6 +933,60 @@ export default function AgencyAdminPage() {
                   ))}
                   {filteredContracts.length === 0 && (
                     <tr><td colSpan={7} className="text-center py-12 text-zinc-600">No contracts yet. Create one from a client record.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ── BLOGS TAB ── */}
+        {activeTab === "blogs" && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="relative flex-1 max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search blogs…" className={`${inp} pl-9`} />
+              </div>
+              <button onClick={() => openAddBlog()} className={btnPrimary}>
+                <Plus className="w-4 h-4" /> New Post
+              </button>
+            </div>
+            
+            <div className="overflow-x-auto rounded-xl border border-white/[0.06]">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/[0.05] bg-[#111111]">
+                    {["Title", "Slug", "Category", "Publish Date", "Status", "Actions"].map(h => (
+                      <th key={h} className="text-left px-4 py-3 text-[11px] font-bold uppercase tracking-widest text-zinc-500">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {blogs.filter(b => b.title.toLowerCase().includes(searchTerm.toLowerCase())).map(b => {
+                    const isPublished = new Date(b.publishDate || "").getTime() <= Date.now();
+                    return (
+                      <tr key={b.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                        <td className="px-4 py-3 font-semibold text-white">{b.title}</td>
+                        <td className="px-4 py-3 text-zinc-400">/{b.slug}</td>
+                        <td className="px-4 py-3">
+                          <span className="text-[11px] bg-white/[0.06] px-2 py-1 rounded font-mono">{b.category}</span>
+                        </td>
+                        <td className="px-4 py-3 text-zinc-400">{b.publishDate}</td>
+                        <td className="px-4 py-3">
+                          {isPublished ? <Badge label="Published" /> : <Badge label="Scheduled" />}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <button onClick={() => openEditBlog(b)} title="Edit" className="text-zinc-500 hover:text-white transition-colors"><Edit className="w-4 h-4" /></button>
+                            <button onClick={() => deleteBlog(b.id!)} title="Delete" className="text-zinc-500 hover:text-rose-400 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {blogs.length === 0 && (
+                    <tr><td colSpan={6} className="text-center py-12 text-zinc-600">No blogs published yet.</td></tr>
                   )}
                 </tbody>
               </table>
@@ -1222,6 +1309,111 @@ export default function AgencyAdminPage() {
                   {contractSaving ? "Saving…" : (editContractId ? "Update Contract" : "Create Contract")}
                 </button>
                 <button type="button" onClick={() => setShowContractModal(false)} className={btnSecondary}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── BLOG EDITOR OVERLAY (Full Screen) ── */}
+      {showBlogEditor && (
+        <div className="fixed inset-0 z-50 bg-[#050505] overflow-y-auto">
+          <div className="max-w-5xl mx-auto py-12 px-6">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold">{editBlogId ? "Edit Post" : "New Post"}</h2>
+              <button onClick={() => setShowBlogEditor(false)} className="text-zinc-500 hover:text-white transition-colors">
+                <X className="w-8 h-8" />
+              </button>
+            </div>
+            <form onSubmit={saveBlog} className="space-y-8">
+              {/* Basic Details */}
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className={lbl}>Title</label>
+                  <input required value={blogForm.title} onChange={e => setBlogForm(p => ({ ...p, title: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') }))} className={inp} placeholder="The Future of AI" />
+                </div>
+                <div>
+                  <label className={lbl}>Slug</label>
+                  <input required value={blogForm.slug} onChange={e => setBlogForm(p => ({ ...p, slug: e.target.value }))} className={inp} placeholder="the-future-of-ai" />
+                </div>
+                <div>
+                  <label className={lbl}>Category</label>
+                  <input required value={blogForm.category} onChange={e => setBlogForm(p => ({ ...p, category: e.target.value }))} className={inp} placeholder="Engineering" />
+                </div>
+                <div>
+                  <label className={lbl}>Author</label>
+                  <input required value={blogForm.author} onChange={e => setBlogForm(p => ({ ...p, author: e.target.value }))} className={inp} placeholder="Md Arsalan" />
+                </div>
+                <div>
+                  <label className={lbl}>Publish Date (Schedule)</label>
+                  <input type="date" required value={blogForm.publishDate} onChange={e => setBlogForm(p => ({ ...p, publishDate: e.target.value }))} className={inp} />
+                  <p className="text-xs text-zinc-500 mt-1">Set to a future date to schedule publication automatically.</p>
+                </div>
+                <div>
+                  <label className={lbl}>Cover Image URL</label>
+                  <input value={blogForm.coverImage} onChange={e => setBlogForm(p => ({ ...p, coverImage: e.target.value }))} className={inp} placeholder="https://..." />
+                </div>
+              </div>
+
+              <div>
+                <label className={lbl}>Excerpt (Short Description)</label>
+                <textarea required value={blogForm.excerpt} onChange={e => setBlogForm(p => ({ ...p, excerpt: e.target.value }))} rows={3} className={`${inp} resize-none`} placeholder="A brief summary of the article..." />
+              </div>
+
+              {/* Rich Text Editor */}
+              <div className="bg-white rounded-xl text-black overflow-hidden">
+                <ReactQuill 
+                  theme="snow" 
+                  value={blogForm.content} 
+                  onChange={content => setBlogForm(p => ({ ...p, content }))} 
+                  className="h-[400px] pb-10"
+                />
+              </div>
+
+              {/* FAQs Section */}
+              <div className="bg-[#111111] border border-white/[0.05] p-6 rounded-2xl">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold">Frequently Asked Questions (SEO)</h3>
+                    <p className="text-sm text-zinc-500">Adding FAQs will generate JSON-LD schema for Google's AI Overviews.</p>
+                  </div>
+                  <button type="button" onClick={() => setBlogForm(p => ({ ...p, faqs: [...p.faqs, { question: "", answer: "" }] }))} className={btnSecondary}>
+                    <Plus className="w-4 h-4" /> Add FAQ
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {blogForm.faqs.map((faq, i) => (
+                    <div key={i} className="flex gap-4 items-start bg-white/[0.02] p-4 rounded-xl border border-white/[0.02]">
+                      <div className="flex-1 space-y-3">
+                        <input required value={faq.question} onChange={e => {
+                          const newFaqs = [...blogForm.faqs];
+                          newFaqs[i].question = e.target.value;
+                          setBlogForm(p => ({ ...p, faqs: newFaqs }));
+                        }} placeholder="Question" className={inp} />
+                        <textarea required value={faq.answer} onChange={e => {
+                          const newFaqs = [...blogForm.faqs];
+                          newFaqs[i].answer = e.target.value;
+                          setBlogForm(p => ({ ...p, faqs: newFaqs }));
+                        }} placeholder="Answer" rows={2} className={`${inp} resize-none`} />
+                      </div>
+                      <button type="button" onClick={() => {
+                        const newFaqs = blogForm.faqs.filter((_, idx) => idx !== i);
+                        setBlogForm(p => ({ ...p, faqs: newFaqs }));
+                      }} className="text-zinc-500 hover:text-rose-400 mt-2">
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                  ))}
+                  {blogForm.faqs.length === 0 && <div className="text-zinc-600 text-sm">No FAQs added yet.</div>}
+                </div>
+              </div>
+
+              {/* Save/Publish */}
+              <div className="flex items-center gap-4 pt-6 border-t border-white/[0.05]">
+                <button type="submit" disabled={blogSaving} className={btnPrimary}>
+                  {blogSaving ? "Saving..." : (editBlogId ? "Update Post" : "Publish / Schedule")}
+                </button>
+                <button type="button" onClick={() => setShowBlogEditor(false)} className={btnSecondary}>Cancel</button>
               </div>
             </form>
           </div>

@@ -12,6 +12,8 @@ export interface BlogPost {
   category: string;
   author: string;
   contentHtml: string;
+  publishDate?: string;
+  faqs?: { question: string; answer: string }[];
 }
 
 export function parseMarkdown(markdown: string): string {
@@ -144,7 +146,16 @@ export async function getDbPosts(): Promise<BlogPost[]> {
     const posts: BlogPost[] = [];
     snapshot.forEach((doc) => {
       const data = doc.data();
-      const contentHtml = parseMarkdown(data.content || "");
+      // If the post has a publishDate and it's in the future, don't include it in public fetch
+      // We will allow admins to see them in the dashboard by fetching directly without this helper if needed,
+      // but this helper is used by the frontend.
+      if (data.publishDate) {
+        const publishTime = new Date(data.publishDate).getTime();
+        if (publishTime > Date.now()) {
+          return; // Skip this post
+        }
+      }
+
       posts.push({
         slug: data.slug || doc.id,
         title: data.title || "",
@@ -153,7 +164,9 @@ export async function getDbPosts(): Promise<BlogPost[]> {
         coverImage: data.coverImage || "",
         category: data.category || "General",
         author: data.author || "Md Arsalan",
-        contentHtml,
+        contentHtml: data.contentHtml || data.content || "", // Use raw HTML from rich text editor
+        publishDate: data.publishDate,
+        faqs: data.faqs || [],
       });
     });
     return posts;
