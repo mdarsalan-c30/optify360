@@ -23,8 +23,8 @@ import {
   LayoutGrid, Cpu, Code, Sparkles, Terminal, BarChart2, Zap
 } from "lucide-react";
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-import 'react-quill/dist/quill.snow.css';
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
+import 'react-quill-new/dist/quill.snow.css';
 
 const TODAY = new Date().toISOString().split('T')[0];
 
