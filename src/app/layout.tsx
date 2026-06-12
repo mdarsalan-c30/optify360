@@ -15,8 +15,15 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Optify360 | Custom SaaS Development, Technical SEO & AI Automation",
-  description: "Optify360 builds high-performance custom SaaS platforms, automates business workflows with AI agents, and executes technical SEO strategies that drive enterprise growth. Led by Md Arsalan.",
+  title: "Optify360 | Custom Web, App & SaaS Development Agency",
+  description: "Optify360 builds high-performance custom SaaS platforms, WordPress sites, mobile apps, and automates business workflows with AI agents. Led by Md Arsalan.",
+  keywords: [
+    "Custom Web Development", "Next.js Development Agency", "WordPress Development",
+    "Mobile App Development", "SaaS Development Company", "Technical SEO Experts",
+    "AI Workflow Automation", "Full Stack Development", "React Developers",
+    "React Native App Development", "Enterprise Software Engineering",
+    "Shopify Development", "E-commerce Development"
+  ],
   metadataBase: new URL("https://optify360.vercel.app"),
   openGraph: {
     title: "Optify360 | Elite Software Engineering & Digital Growth Systems",

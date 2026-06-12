@@ -20,7 +20,7 @@ import {
   KeyRound, RefreshCw, LogOut, Mail, User, Phone, 
   Briefcase, FileText, Calendar, Database, Search, 
   Plus, Edit, Trash2, X, CheckCircle, DatabaseZap, Trash, ShieldCheck,
-  LayoutGrid, Cpu, Code, Sparkles, Terminal, BarChart2, Zap
+  LayoutGrid, Cpu, Code, Sparkles, Terminal, BarChart2, Zap, MapPin
 } from "lucide-react";
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
@@ -41,14 +41,15 @@ export default function AdminPage() {
   const [projects, setProjects] = useState<any[]>([]);
   const [testimonials, setTestimonials] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
+  const [locations, setLocations] = useState<any[]>([]);
   
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"inquiries" | "blogs" | "portfolio" | "testimonials" | "services">("inquiries");
+  const [activeTab, setActiveTab] = useState<"inquiries" | "blogs" | "portfolio" | "testimonials" | "services" | "locations">("inquiries");
   const [activeSubTab, setActiveSubTab] = useState<"contacts" | "leads">("contacts");
   const [searchTerm, setSearchTerm] = useState("");
   
   // Form Editor Modal States
-  const [editorType, setEditorType] = useState<"blog" | "project" | "testimonial" | "service" | null>(null);
+  const [editorType, setEditorType] = useState<"blog" | "project" | "testimonial" | "service" | "location" | null>(null);
   const [editId, setEditId] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -68,6 +69,9 @@ export default function AdminPage() {
   });
   const [serviceForm, setServiceForm] = useState({
     name: "", headline: "", description: "", pillars: "", iconName: "Code"
+  });
+  const [locationForm, setLocationForm] = useState({
+    city: "", slug: "", metaTitle: "", metaDescription: "", localAddress: ""
   });
 
   // Authenticate session on mount using Firebase Auth state
@@ -109,6 +113,7 @@ export default function AdminPage() {
     setProjects([]);
     setTestimonials([]);
     setServices([]);
+    setLocations([]);
   };
 
   const fetchData = async () => {
@@ -156,6 +161,13 @@ export default function AdminPage() {
         return { id: doc.id, ...data, createdAt: data.createdAt?.toDate() || new Date() };
       }));
 
+      // 7. Fetch locations
+      const locationsSnapshot = await getDocs(query(collection(db, "locations"), orderBy("createdAt", "desc")));
+      setLocations(locationsSnapshot.docs.map(doc => {
+        const data = doc.data();
+        return { id: doc.id, ...data, createdAt: data.createdAt?.toDate() || new Date() };
+      }));
+
     } catch (err) {
       console.error("Error loading admin collections from Firestore:", err);
     } finally {
@@ -171,6 +183,7 @@ export default function AdminPage() {
     setProjectForm({ client: "", category: "", title: "", challenge: "", solution: "", techStack: "", outcome: "", metric: "", gradient: "" });
     setTestimonialForm({ author: "", role: "", company: "", quote: "", avatarGradient: "" });
     setServiceForm({ name: "", headline: "", description: "", pillars: "", iconName: "Code" });
+    setLocationForm({ city: "", slug: "", metaTitle: "", metaDescription: "", localAddress: "" });
   };
 
   // Upload blog image to Firebase Storage
@@ -292,32 +305,47 @@ export default function AdminPage() {
     e.preventDefault();
     setSubmitting(true);
     try {
+      const payload = {
+        ...serviceForm,
+        pillars: serviceForm.pillars.split(",").map(p => p.trim()).filter(Boolean)
+      };
+
       if (editId) {
-        const docRef = doc(db, "services", editId);
-        await updateDoc(docRef, { ...serviceForm, updatedAt: serverTimestamp() });
-        showNotification("Service updated.");
+        await updateDoc(doc(db, "services", editId), { ...payload, updatedAt: serverTimestamp() });
+        showNotification("Service updated successfully");
       } else {
-        await addDoc(collection(db, "services"), {
-          ...serviceForm,
-          createdAt: serverTimestamp()
-        });
-        showNotification("Service created.");
+        await addDoc(collection(db, "services"), { ...payload, createdAt: serverTimestamp() });
+        showNotification("Service created successfully");
       }
       closeEditor();
       fetchData();
-    } catch (err) {
-      console.error(err);
-      alert("Failed to save service.");
-    } finally {
-      setSubmitting(false);
-    }
+    } catch (err: any) {
+      alert("Failed to save service: " + err.message);
+    } finally { setSubmitting(false); }
   };
 
-  // Generic Delete
-  const handleDelete = async (colName: string, id: string) => {
-    if (!window.confirm(`Are you sure you want to delete this item from the ${colName} collection?`)) return;
+  const saveLocation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
     try {
-      await deleteDoc(doc(db, colName, id));
+      if (editId) {
+        await updateDoc(doc(db, "locations", editId), { ...locationForm, updatedAt: serverTimestamp() });
+        showNotification("Location updated successfully");
+      } else {
+        await addDoc(collection(db, "locations"), { ...locationForm, createdAt: serverTimestamp() });
+        showNotification("Location created successfully");
+      }
+      closeEditor();
+      fetchData();
+    } catch (err: any) {
+      alert("Failed to save location: " + err.message);
+    } finally { setSubmitting(false); }
+  };
+
+  const handleDelete = async (collectionName: string, id: string) => {
+    if (!window.confirm(`Are you sure you want to delete this item?`)) return;
+    try {
+      await deleteDoc(doc(db, collectionName, id));
       showNotification("Item deleted successfully.");
       fetchData();
     } catch (err) {
@@ -619,7 +647,7 @@ Keep API brokers decoupled from the client. NextJS 15 Server Components allow ex
   };
 
   // Populate Forms for Editing
-  const startEdit = (type: "blog" | "project" | "testimonial" | "service", item: any) => {
+  const startEdit = (type: "blog" | "project" | "testimonial" | "service" | "location", item: any) => {
     setEditId(item.id);
     setEditorType(type);
     if (type === "blog") {
@@ -661,6 +689,14 @@ Keep API brokers decoupled from the client. NextJS 15 Server Components allow ex
         description: item.description || "",
         pillars: Array.isArray(item.pillars) ? item.pillars.join(", ") : (item.pillars || ""),
         iconName: item.iconName || "Code"
+      });
+    } else if (type === "location") {
+      setLocationForm({
+        city: item.city || "",
+        slug: item.slug || "",
+        metaTitle: item.metaTitle || "",
+        metaDescription: item.metaDescription || "",
+        localAddress: item.localAddress || ""
       });
     }
   };
@@ -890,6 +926,14 @@ Keep API brokers decoupled from the client. NextJS 15 Server Components allow ex
             >
               Services Manager
             </button>
+            <button
+              onClick={() => { setActiveTab("locations"); setSearchTerm(""); }}
+              className={`px-4 py-2 rounded-lg text-xs md:text-sm font-semibold transition-all ${
+                activeTab === "locations" ? "bg-[#FF6B00] text-white" : "text-[#A0A0A0] hover:text-[#F5F5F5]"
+              }`}
+            >
+              City Locations (SEO)
+            </button>
           </div>
 
           {/* Search and Action */}
@@ -906,7 +950,7 @@ Keep API brokers decoupled from the client. NextJS 15 Server Components allow ex
             </div>
             {activeTab !== "inquiries" && (
               <button 
-                onClick={() => setEditorType(activeTab === "blogs" ? "blog" : activeTab === "portfolio" ? "project" : activeTab === "services" ? "service" : "testimonial")}
+                onClick={() => setEditorType(activeTab === "blogs" ? "blog" : activeTab === "portfolio" ? "project" : activeTab === "services" ? "service" : activeTab === "locations" ? "location" : "testimonial")}
                 className="bg-[#FF6B00] hover:bg-[#FF6B00]/90 text-white font-semibold text-xs px-4 py-3 rounded-xl flex items-center gap-1.5 shrink-0"
               >
                 <Plus className="w-4 h-4" /> Add Item
@@ -1249,6 +1293,60 @@ Keep API brokers decoupled from the client. NextJS 15 Server Components allow ex
                           </button>
                           <button 
                             onClick={() => handleDelete("services", s.id)}
+                            className="text-rose-400 hover:text-rose-300 p-2 rounded-lg hover:bg-rose-500/10 transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* LOCATIONS SEO PANELS */}
+        {activeTab === "locations" && (
+          <div className="bg-[#111111] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="p-5 border-b border-white/[0.08] flex justify-between items-center bg-[#151515]">
+              <h3 className="font-bold text-sm tracking-wide text-text-main flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-[#FF6B00]" />
+                City Locations (Programmatic SEO)
+              </h3>
+              <span className="bg-[#FF6B00]/10 text-[#FF6B00] px-3 py-1 rounded-full text-xs font-semibold">{locations.length} Cities</span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-black/40 text-[10px] uppercase tracking-widest text-[#A0A0A0] border-b border-white/[0.05]">
+                    <th className="p-4 font-semibold">City Name</th>
+                    <th className="p-4 font-semibold">Slug (URL)</th>
+                    <th className="p-4 font-semibold">Meta Title</th>
+                    <th className="p-4 font-semibold text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="text-xs">
+                  {locations.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="p-8 text-center text-[#A0A0A0] italic">No cities added yet.</td>
+                    </tr>
+                  ) : (
+                    locations.filter(l => l.city?.toLowerCase().includes(searchTerm.toLowerCase())).map(l => (
+                      <tr key={l.id} className="border-b border-white/[0.05] hover:bg-white/[0.02] transition-colors">
+                        <td className="p-4 font-semibold text-white">{l.city}</td>
+                        <td className="p-4 text-zinc-400 font-mono">/locations/{l.slug}</td>
+                        <td className="p-4 text-zinc-400 max-w-[200px] truncate">{l.metaTitle}</td>
+                        <td className="p-4 flex items-center justify-end gap-2">
+                          <button 
+                            onClick={() => startEdit("location", l)}
+                            className="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-blue-500/10 transition-colors"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button 
+                            onClick={() => handleDelete("locations", l.id)}
                             className="text-rose-400 hover:text-rose-300 p-2 rounded-lg hover:bg-rose-500/10 transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -1711,6 +1809,76 @@ Keep API brokers decoupled from the client. NextJS 15 Server Components allow ex
                 </form>
               )}
 
+              {/* 5. LOCATION FORM */}
+              {editorType === "location" && (
+                <form onSubmit={saveLocation} className="p-6 space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs uppercase tracking-wider text-text-muted mb-1 font-mono">City Name</label>
+                      <input 
+                        type="text" required value={locationForm.city}
+                        onChange={(e) => setLocationForm({...locationForm, city: e.target.value})}
+                        className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#FF6B00]/40 text-text-main"
+                        placeholder="e.g. Dubai"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs uppercase tracking-wider text-text-muted mb-1 font-mono">URL Slug</label>
+                      <input 
+                        type="text" required value={locationForm.slug}
+                        onChange={(e) => setLocationForm({...locationForm, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, "-")})}
+                        className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#FF6B00]/40 font-mono text-text-main"
+                        placeholder="e.g. dubai"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-text-muted mb-1 font-mono">Meta Title (SEO)</label>
+                    <input 
+                      type="text" required value={locationForm.metaTitle}
+                      onChange={(e) => setLocationForm({...locationForm, metaTitle: e.target.value})}
+                      className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#FF6B00]/40 text-text-main"
+                      placeholder="e.g. Custom SaaS & App Development Agency in Dubai"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-text-muted mb-1 font-mono">Meta Description (SEO)</label>
+                    <textarea 
+                      required rows={2} value={locationForm.metaDescription}
+                      onChange={(e) => setLocationForm({...locationForm, metaDescription: e.target.value})}
+                      className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#FF6B00]/40 resize-none text-text-main"
+                      placeholder="Optify360 is the leading..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-text-muted mb-1 font-mono">Local Office Address (Optional - For LocalBusiness Schema)</label>
+                    <input 
+                      type="text" value={locationForm.localAddress}
+                      onChange={(e) => setLocationForm({...locationForm, localAddress: e.target.value})}
+                      className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#FF6B00]/40 text-text-main"
+                      placeholder="e.g. 123 Business Bay, Dubai, UAE"
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-3 pt-4 border-t border-white/[0.08]">
+                    <button 
+                      type="button" onClick={closeEditor}
+                      className="border border-white/10 bg-white/[0.02] hover:bg-white/[0.07] px-5 py-2.5 rounded-xl text-xs font-semibold"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit" disabled={submitting}
+                      className="bg-[#FF6B00] hover:bg-[#FF6B00]/90 text-white font-semibold text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-[#FF6B00]/10"
+                    >
+                      {submitting ? "Saving..." : "Save Location"}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
         )}

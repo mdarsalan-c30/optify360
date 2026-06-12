@@ -22,7 +22,7 @@ const fadeUpVariant = {
   visible: { opacity: 1, y: 0, transition: transitionPreset }
 };
 
-export default function Hero() {
+export default function Hero({ city }: { city?: string }) {
   return (
     <section className="relative overflow-hidden pt-16 pb-12 md:pb-16">
       {/* Background Ambient Glows */}
@@ -45,7 +45,7 @@ export default function Hero() {
               className="text-4xl md:text-5xl lg:text-7xl font-bold font-heading tracking-tight leading-[1.05] text-text-main"
             >
               Architecting Elite Digital Products That Fuel{" "}
-              <span className="text-gradient">Hyper-Growth</span>
+              <span className="text-gradient">Hyper-Growth {city ? `in ${city}` : ""}</span>
             </motion.h1>
 
             {/* Support Text */}

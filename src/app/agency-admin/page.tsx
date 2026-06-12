@@ -24,7 +24,7 @@ import 'react-quill-new/dist/quill.snow.css';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
-type Tab = "clients" | "invoices" | "contracts" | "settings" | "blogs";
+type Tab = "clients" | "invoices" | "contracts" | "settings" | "blogs" | "locations";
 type InvoiceStatus = "Draft" | "Sent" | "Paid";
 type ContractStatus = "Draft" | "Sent" | "Signed";
 type ProjectStatus =
@@ -171,6 +171,7 @@ export default function AgencyAdminPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [blogs, setBlogs] = useState<AdminBlog[]>([]);
+  const [locations, setLocations] = useState<any[]>([]);
   const [agencySettings, setAgencySettings] = useState<AgencySettings>({
     agencyName: "Optify360",
     agencyEmail: "optify360official@gmail.com",
@@ -227,6 +228,12 @@ export default function AgencyAdminPage() {
   const [blogForm, setBlogForm] = useState<AdminBlog>({
     title: "", slug: "", category: "Engineering", author: "Md Arsalan",
     coverImage: "", excerpt: "", content: "", publishDate: TODAY, faqs: []
+  });
+
+  const [showLocationEditor, setShowLocationEditor] = useState(false);
+  const [editLocationId, setEditLocationId] = useState<string | null>(null);
+  const [locationForm, setLocationForm] = useState({
+    city: "", slug: "", metaTitle: "", metaDescription: "", localAddress: ""
   });
   const [blogSaving, setBlogSaving] = useState(false);
 
@@ -330,6 +337,9 @@ export default function AgencyAdminPage() {
   const fetchBlogs = async () => {
     const snap = await getDocs(query(collection(db, "blogs"), orderBy("createdAt", "desc")));
     setBlogs(snap.docs.map(d => ({ id: d.id, ...d.data() } as AdminBlog)));
+    
+    const locSnap = await getDocs(query(collection(db, "locations"), orderBy("createdAt", "desc")));
+    setLocations(locSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
   };
 
   const notify = (msg: string) => {
@@ -648,6 +658,43 @@ export default function AgencyAdminPage() {
     notify("Blog deleted."); fetchBlogs();
   };
 
+  const openAddLocation = () => {
+    setEditLocationId(null);
+    setLocationForm({ city: "", slug: "", metaTitle: "", metaDescription: "", localAddress: "" });
+    setShowLocationEditor(true);
+  };
+
+  const openEditLocation = (loc: any) => {
+    setEditLocationId(loc.id);
+    setLocationForm({ city: loc.city, slug: loc.slug, metaTitle: loc.metaTitle, metaDescription: loc.metaDescription, localAddress: loc.localAddress || "" });
+    setShowLocationEditor(true);
+  };
+
+  const saveLocation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (editLocationId) {
+        await updateDoc(doc(db, "locations", editLocationId), { ...locationForm, updatedAt: serverTimestamp() });
+        notify("Location updated!");
+      } else {
+        await addDoc(collection(db, "locations"), { ...locationForm, createdAt: serverTimestamp() });
+        notify("Location added!");
+      }
+      setShowLocationEditor(false);
+      fetchBlogs();
+    } catch (err: any) { alert(err.message); } finally { setLoading(false); }
+  };
+
+  const deleteLocation = async (id: string) => {
+    if(!window.confirm("Are you sure?")) return;
+    try {
+      await deleteDoc(doc(db, "locations", id));
+      notify("Deleted successfully");
+      fetchBlogs();
+    } catch(err:any){ alert(err.message); }
+  };
+
   // ── Filtered Data ───────────────────────────────────────────────────────────
 
   const filteredClients = clients.filter(c =>
@@ -717,6 +764,104 @@ export default function AgencyAdminPage() {
             </button>
           </form>
         </div>
+        {/* ── LOCATIONS TAB ── */}
+        {activeTab === "locations" && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <h2 className="text-xl font-bold font-heading text-white">City Locations (SEO)</h2>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <div className="relative flex-1 sm:w-64">
+                  <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-3" />
+                  <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search cities…" className={`${inp} pl-9`} />
+                </div>
+                <button onClick={openAddLocation} className={btnPrimary}>
+                  <Plus className="w-4 h-4" /> Add City
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-zinc-900/50 text-zinc-400 border-b border-zinc-800">
+                    <tr>
+                      <th className="px-6 py-4 font-medium">City</th>
+                      <th className="px-6 py-4 font-medium">Slug</th>
+                      <th className="px-6 py-4 font-medium">Meta Title</th>
+                      <th className="px-6 py-4 font-medium text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-800">
+                  {locations.filter(l => l.city?.toLowerCase().includes(searchTerm.toLowerCase())).map(l => (
+                    <tr key={l.id} className="hover:bg-zinc-800/30 transition-colors">
+                      <td className="px-6 py-4 font-medium text-white">{l.city}</td>
+                      <td className="px-6 py-4 text-zinc-400 font-mono">/locations/{l.slug}</td>
+                      <td className="px-6 py-4 text-zinc-400 truncate max-w-[200px]">{l.metaTitle}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex justify-end gap-2">
+                          <button onClick={() => openEditLocation(l)} className="p-2 text-zinc-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-lg"><Edit className="w-4 h-4" /></button>
+                          <button onClick={() => deleteLocation(l.id)} className="p-2 text-zinc-400 hover:text-rose-400 hover:bg-rose-400/10 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {locations.length === 0 && (
+                    <tr><td colSpan={4} className="text-center py-12 text-zinc-600">No locations added yet.</td></tr>
+                  )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Location Editor Modal */}
+        {showLocationEditor && (
+          <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm">
+            <div className="w-full max-w-2xl bg-[#0a0a0a] border-l border-white/10 h-full flex flex-col shadow-2xl">
+              <div className="flex justify-between items-center px-6 py-5 border-b border-white/10 bg-[#111] shrink-0">
+                <h3 className="text-lg font-bold font-heading text-white">{editLocationId ? "Edit City Location" : "New City Location"}</h3>
+                <button onClick={() => setShowLocationEditor(false)} className="text-zinc-400 hover:text-white p-1 rounded-md hover:bg-white/5 transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 scrollbar-thin">
+                <form id="location-form" onSubmit={saveLocation} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">City Name</label>
+                      <input required value={locationForm.city} onChange={e => setLocationForm(p => ({ ...p, city: e.target.value }))} className={inp} placeholder="e.g. Dubai" />
+                    </div>
+                    <div>
+                      <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">Slug</label>
+                      <input required value={locationForm.slug} onChange={e => setLocationForm(p => ({ ...p, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-") }))} className={inp} placeholder="e.g. dubai" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">Meta Title</label>
+                    <input required value={locationForm.metaTitle} onChange={e => setLocationForm(p => ({ ...p, metaTitle: e.target.value }))} className={inp} />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">Meta Description</label>
+                    <textarea required rows={3} value={locationForm.metaDescription} onChange={e => setLocationForm(p => ({ ...p, metaDescription: e.target.value }))} className={inp} />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">Local Address (Optional)</label>
+                    <input value={locationForm.localAddress} onChange={e => setLocationForm(p => ({ ...p, localAddress: e.target.value }))} className={inp} placeholder="123 Street, Dubai" />
+                  </div>
+                </form>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/10 bg-[#111] shrink-0 flex justify-end gap-3">
+                <button type="button" onClick={() => setShowLocationEditor(false)} className={btnSecondary}>Cancel</button>
+                <button type="submit" form="location-form" disabled={loading} className={btnPrimary}>
+                  {loading ? "Saving..." : "Save Location"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     );
   }
@@ -728,6 +873,7 @@ export default function AgencyAdminPage() {
     { id: "invoices", label: "Invoices", icon: <FileText className="w-4 h-4" />, count: invoices.length },
     { id: "contracts", label: "Contracts", icon: <FilePen className="w-4 h-4" />, count: contracts.length },
     { id: "blogs", label: "Blogs", icon: <Sparkles className="w-4 h-4" />, count: blogs.length },
+    { id: "locations", label: "Locations", icon: <MapPin className="w-4 h-4" />, count: locations.length },
     { id: "settings", label: "Settings", icon: <Settings2 className="w-4 h-4" /> },
   ];
 
@@ -1464,6 +1610,105 @@ export default function AgencyAdminPage() {
                 <button type="button" onClick={() => setShowBlogEditor(false)} className={btnSecondary}>Cancel</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── LOCATIONS TAB ── */}
+      {activeTab === "locations" && (
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h2 className="text-xl font-bold font-heading text-white">City Locations (SEO)</h2>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 sm:w-64">
+                <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-3" />
+                <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search cities…" className={`${inp} pl-9`} />
+              </div>
+              <button onClick={openAddLocation} className={btnPrimary}>
+                <Plus className="w-4 h-4" /> Add City
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-zinc-900/50 text-zinc-400 border-b border-zinc-800">
+                  <tr>
+                    <th className="px-6 py-4 font-medium">City</th>
+                    <th className="px-6 py-4 font-medium">Slug</th>
+                    <th className="px-6 py-4 font-medium">Meta Title</th>
+                    <th className="px-6 py-4 font-medium text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-800">
+                {locations.filter(l => l.city?.toLowerCase().includes(searchTerm.toLowerCase())).map(l => (
+                  <tr key={l.id} className="hover:bg-zinc-800/30 transition-colors">
+                    <td className="px-6 py-4 font-medium text-white">{l.city}</td>
+                    <td className="px-6 py-4 text-zinc-400 font-mono">/locations/{l.slug}</td>
+                    <td className="px-6 py-4 text-zinc-400 truncate max-w-[200px]">{l.metaTitle}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-2">
+                        <button onClick={() => openEditLocation(l)} className="p-2 text-zinc-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-lg"><Edit className="w-4 h-4" /></button>
+                        <button onClick={() => deleteLocation(l.id)} className="p-2 text-zinc-400 hover:text-rose-400 hover:bg-rose-400/10 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {locations.length === 0 && (
+                  <tr><td colSpan={4} className="text-center py-12 text-zinc-600">No locations added yet.</td></tr>
+                )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Location Editor Modal */}
+      {showLocationEditor && (
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-2xl bg-[#0a0a0a] border-l border-white/10 h-full flex flex-col shadow-2xl">
+            <div className="flex justify-between items-center px-6 py-5 border-b border-white/10 bg-[#111] shrink-0">
+              <h3 className="text-lg font-bold font-heading text-white">{editLocationId ? "Edit City Location" : "New City Location"}</h3>
+              <button onClick={() => setShowLocationEditor(false)} className="text-zinc-400 hover:text-white p-1 rounded-md hover:bg-white/5 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 scrollbar-thin">
+              <form id="location-form" onSubmit={saveLocation} className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">City Name</label>
+                    <input required value={locationForm.city} onChange={e => setLocationForm(p => ({ ...p, city: e.target.value }))} className={inp} placeholder="e.g. Dubai" />
+                  </div>
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">Slug</label>
+                    <input required value={locationForm.slug} onChange={e => setLocationForm(p => ({ ...p, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-") }))} className={inp} placeholder="e.g. dubai" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">Meta Title</label>
+                  <input required value={locationForm.metaTitle} onChange={e => setLocationForm(p => ({ ...p, metaTitle: e.target.value }))} className={inp} />
+                </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">Meta Description</label>
+                  <textarea required rows={3} value={locationForm.metaDescription} onChange={e => setLocationForm(p => ({ ...p, metaDescription: e.target.value }))} className={inp} />
+                </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-zinc-500 mb-2 font-mono">Local Address (Optional)</label>
+                  <input value={locationForm.localAddress} onChange={e => setLocationForm(p => ({ ...p, localAddress: e.target.value }))} className={inp} placeholder="123 Street, Dubai" />
+                </div>
+              </form>
+            </div>
+
+            <div className="px-6 py-4 border-t border-white/10 bg-[#111] shrink-0 flex justify-end gap-3">
+              <button type="button" onClick={() => setShowLocationEditor(false)} className={btnSecondary}>Cancel</button>
+              <button type="submit" form="location-form" disabled={loading} className={btnPrimary}>
+                {loading ? "Saving..." : "Save Location"}
+              </button>
+            </div>
           </div>
         </div>
       )}
