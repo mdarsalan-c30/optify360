@@ -600,6 +600,54 @@ export default function AgencyAdminPage() {
     } finally { setGeneratingPDF(null); }
   };
 
+  // ── Blog CRUD ─────────────────────────────────────────────────────────────────
+
+  const openAddBlog = () => {
+    setEditBlogId(null);
+    setBlogForm({
+      title: "", slug: "", category: "Engineering", author: "Md Arsalan",
+      coverImage: "", excerpt: "", content: "", publishDate: TODAY, faqs: []
+    });
+    setShowBlogEditor(true);
+  };
+
+  const openEditBlog = (b: AdminBlog) => {
+    setEditBlogId(b.id || null);
+    setBlogForm({
+      title: b.title, slug: b.slug, category: b.category, author: b.author,
+      coverImage: b.coverImage, excerpt: b.excerpt, content: b.content || "",
+      publishDate: b.publishDate || TODAY, faqs: b.faqs || []
+    });
+    setShowBlogEditor(true);
+  };
+
+  const saveBlog = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBlogSaving(true);
+    const payload = {
+      ...blogForm,
+      updatedAt: serverTimestamp(),
+    };
+    try {
+      if (editBlogId) {
+        await updateDoc(doc(db, "blogs", editBlogId), payload);
+        notify("Blog updated.");
+      } else {
+        await addDoc(collection(db, "blogs"), { ...payload, createdAt: serverTimestamp() });
+        notify("Blog scheduled/published.");
+      }
+      setShowBlogEditor(false);
+      fetchBlogs();
+    } catch (err) { console.error(err); alert("Failed to save blog."); }
+    finally { setBlogSaving(false); }
+  };
+
+  const deleteBlog = async (id: string) => {
+    if (!confirm("Delete this blog post?")) return;
+    await deleteDoc(doc(db, "blogs", id));
+    notify("Blog deleted."); fetchBlogs();
+  };
+
   // ── Filtered Data ───────────────────────────────────────────────────────────
 
   const filteredClients = clients.filter(c =>
