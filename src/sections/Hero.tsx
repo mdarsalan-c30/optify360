@@ -53,7 +53,7 @@ export default function Hero({ city }: { city?: string }) {
               variants={fadeUpVariant}
               className="text-base md:text-lg text-text-muted max-w-xl leading-relaxed"
             >
-              We build custom SaaS platforms, automate complex operations, and execute high-performance SEO strategies. No templates, no shortcuts—just bespoke engineering and marketing that scales your revenue.
+              We provide end-to-end solutions including Custom Web Development, App Development, WordPress platforms, SaaS products, and advanced SEO strategies. No templates, no shortcuts—just bespoke engineering and marketing that scales your revenue.
             </motion.p>
 
             {/* CTA Buttons */}
