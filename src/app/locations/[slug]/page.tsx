@@ -22,8 +22,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const loc = await getLocationBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const loc = await getLocationBySlug(slug);
   if (!loc) return {};
 
   return {
@@ -35,8 +36,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function LocationPage({ params }: { params: { slug: string } }) {
-  const loc = await getLocationBySlug(params.slug);
+export default async function LocationPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const loc = await getLocationBySlug(slug);
 
   if (!loc) {
     notFound();
