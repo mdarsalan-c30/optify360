@@ -79,6 +79,9 @@ export default function RootLayout({
       lang="en"
       className={`${outfit.variable} ${geistSans.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="llms" href="/llms.txt" />
+      </head>
       <body className="bg-bg text-text-main min-h-screen flex flex-col selection:bg-primary-orange/30 selection:text-text-main">
         <SmoothScroll>
           <div className="flex flex-col min-h-screen">
