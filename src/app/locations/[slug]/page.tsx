@@ -11,8 +11,9 @@ import Process from "@/sections/Process";
 import Portfolio from "@/sections/Portfolio";
 import Testimonials from "@/sections/Testimonials";
 
-// ISR Configuration (revalidate every 24 hours)
-export const revalidate = 86400;
+// ISR Configuration (revalidate every 60 seconds to prevent cached 404s on new locations)
+export const revalidate = 60;
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const locations = await getAllLocations();
