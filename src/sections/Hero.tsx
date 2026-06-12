@@ -39,14 +39,13 @@ export default function Hero({ city }: { city?: string }) {
             animate="visible"
             className="lg:col-span-7 space-y-6"
           >
-            {/* Heading */}
-            <motion.h1 
-              variants={fadeUpVariant}
+            {/* Heading (Static for SEO/Bing visibility) */}
+            <h1 
               className="text-4xl md:text-5xl lg:text-7xl font-bold font-heading tracking-tight leading-[1.05] text-text-main"
             >
               Architecting Elite Digital Products That Fuel{" "}
               <span className="text-gradient">Hyper-Growth {city ? `in ${city}` : ""}</span>
-            </motion.h1>
+            </h1>
 
             {/* Support Text */}
             <motion.p 
